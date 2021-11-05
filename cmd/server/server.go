@@ -73,7 +73,7 @@ func main() {
 	Editor(sub, "css", Options)
 	Editor(sub, "js", Options)
 	Imager(sub, "images", Options)
-	Tempater(sub, "templates", Options)
+	Tmpl(sub, "templates", Options)
 
 	httpAddr := fmt.Sprintf("%s:%s",
 		Env("HTTP_HOST", "0.0.0.0"),
@@ -103,8 +103,6 @@ func Editor(sub *mux.Router,  ext string, Options *cms.Options){
 	l = fmt.Sprintf("static/%s", ext)
 	w = fmt.Sprintf("/admin/%s", ext)
 
-	log.Println(p)
-
 	sub.HandleFunc(p,
 		files.PathEdit(l, w, *Options)).Methods("GET")
 	sub.HandleFunc(p,
@@ -124,7 +122,7 @@ func Imager(sub *mux.Router,  ext string, Options *cms.Options){
 		Methods("POST")
 }
 
-func Tempater(sub *mux.Router,  ext string, Options *cms.Options){
+func Tmpl(sub *mux.Router,  ext string, Options *cms.Options){
 	p := "/"+ext
 	l := ext
 	w := "/admin/"+ext
