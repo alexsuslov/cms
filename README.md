@@ -4,7 +4,7 @@ This project is made as an opportunity study.
 
 ## Planred
 
-- Boltdb database
+- BoltDB
 - authorization
 
 ## run
