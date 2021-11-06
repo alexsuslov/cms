@@ -113,7 +113,7 @@ func Editor(sub *mux.Router,  ext string, Options *cms.Options){
 func Imager(sub *mux.Router,  ext string, Options *cms.Options){
 	p := "/"+ext
 	l := "static/"+ext
-	w := "/admin/"+ext
+	w := "/static/"+ext
 
 	sub.HandleFunc(p,
 		files.Files(l, w, *Options)).Methods("GET")
