@@ -10,4 +10,4 @@ This project is made as an opportunity study.
 
 ## Filemanager preview
 
-!()[]
+![tmpls](https://github.com/alexsuslov/cms/raw/main/cmd/server/static/images/tmpls.jpg)
