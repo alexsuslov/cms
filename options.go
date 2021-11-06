@@ -15,6 +15,7 @@ func Load(filename string) (opts *Options, err error) {
 	if err != nil {
 		return
 	}
+	defer f.Close()
 	err = yaml.NewDecoder(f).Decode(opts)
 
 	return opts.

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Masterminds/sprig"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
 	"github.com/alexsuslov/cms/handle/files"
@@ -12,7 +13,6 @@ import (
 	"net/http"
 	"os"
 	"syscall"
-	"github.com/Masterminds/sprig"
 )
 
 var version = "developer preview"

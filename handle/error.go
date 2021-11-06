@@ -13,11 +13,6 @@ type IExtend interface {
 func Err(t ITemplate, o interface{}) func(w http.ResponseWriter, err error) bool {
 	return func(w http.ResponseWriter, err error) bool {
 		if err != nil {
-			if err.Error() == "no user" {
-				_ = t.ExecuteTemplate(w, "restore_no_user", o)
-				return true
-			}
-
 			if err.Error() == "401" {
 				w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
 				w.WriteHeader(401)

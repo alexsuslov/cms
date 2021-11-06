@@ -35,6 +35,7 @@ func PathEdit(localPath string, webPath string, o cms.Options) http.HandlerFunc 
 				return
 			}
 		}
+		filename = path.Base(filename)
 		data, err := ioutil.ReadFile(localPath + "/" + filename)
 		if err != nil {
 			logrus.Warning(err)
@@ -71,6 +72,8 @@ func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFun
 				return
 			}
 		}
+		filename = path.Base(filename)
+
 		data, err := io.ReadAll(r.Body)
 		if onErr(w, err) {
 			return
@@ -81,6 +84,7 @@ func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFun
 		if onErr(w, err) {
 			return
 		}
+		defer f.Close()
 		_, err = f.Write(data)
 		if onErr(w, err) {
 			return

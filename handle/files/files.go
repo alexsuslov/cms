@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -38,6 +39,28 @@ var Editable = Editables{
 	"md",
 }
 
+func addPath(localPath  string, filenames []string)(paths []string){
+	paths = []string{}
+	for _, filename := range filenames{
+		f := path.Base(filename)
+		paths= append(paths, fmt.Sprintf("%s/%s", localPath, f))
+	}
+	return
+}
+
+func rmFiles(filePaths[]string)error{
+	for _, filePath := range filePaths{
+		logrus.WithField("filepath", filePath).Info("remove file")
+		err := os.Remove(filePath)
+		if err != nil {
+			logrus.Error(err)
+			return err
+		}
+	}
+	return nil
+}
+
+
 func Files(localPath string, path string, o cms.Options) http.HandlerFunc {
 
 	Init()
@@ -47,19 +70,15 @@ func Files(localPath string, path string, o cms.Options) http.HandlerFunc {
 		query := r.URL.Query()
 
 		// rm file
-		if f, ok := query["rm"]; ok {
-			pathFile := fmt.Sprintf("%s/%s", localPath, f[0])
-			logrus.Info(pathFile)
-			err := os.Remove(pathFile)
-			if err != nil {
-				logrus.Error(err)
-			}
+		if files, ok := query["rm"]; ok {
+			rmFiles(addPath(localPath, files))
 		}
 
 		files, err := ioutil.ReadDir(localPath)
 		if onErr(w, err) {
 			return
 		}
+
 		var Files []FileInfo
 		for _, f := range files {
 			// skip dot files
@@ -91,11 +110,12 @@ func FileUpload(localPath string, path string, o cms.Options) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if file, handler, err := r.FormFile("file"); err == nil {
 			defer file.Close()
-
-			filePath := fmt.Sprintf("%s/%s", localPath, handler.Filename)
+			filename := handler.Filename
+			filePath := fmt.Sprintf("%s/%s", localPath, filename)
 			f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
 			if err == nil {
 				_, err = io.Copy(f, file)
+				defer f.Close()
 				if onErr(w, err) {
 					return
 				}

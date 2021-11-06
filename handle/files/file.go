@@ -53,6 +53,7 @@ func FileUpdate(file string, o cms.Options) http.HandlerFunc {
 		if onErr(w, err) {
 			return
 		}
+		defer f.Close()
 		_, err = f.Write(data)
 		if onErr(w, err) {
 			return
