@@ -2,6 +2,7 @@ package files
 
 import (
 	"embed"
+	"github.com/Masterminds/sprig"
 	"html/template"
 )
 
@@ -13,7 +14,9 @@ var t *template.Template
 func Init() {
 	if t == nil {
 		var err error
-		t, err = template.ParseFS(templates, "templates/*")
+		t= template.New("base").
+			Funcs(sprig.FuncMap())
+		t, err = t.ParseFS(templates, "templates/*")
 		if err != nil {
 			panic(err)
 		}

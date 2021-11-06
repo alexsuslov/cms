@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"syscall"
+	"github.com/Masterminds/sprig"
 )
 
 var version = "developer preview"
@@ -44,7 +45,10 @@ func main() {
 	}
 
 	//templates
-	Templates := template.Must(template.ParseGlob(Env("TEMPLATES", "templates") + "/*.tmpl"))
+	Templates := template.Must(
+		template.New("base").
+			Funcs(sprig.FuncMap()).
+				ParseGlob(Env("TEMPLATES", "templates") + "/*.tmpl"))
 	r := mux.NewRouter()
 
 	// home
