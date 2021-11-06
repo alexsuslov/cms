@@ -14,17 +14,16 @@ import (
 )
 
 var modes = map[string]string{
-	".css": "ace/mode/css",
-	".js": "ace/mode/javascript",
+	".css":  "ace/mode/css",
+	".js":   "ace/mode/javascript",
 	".json": "ace/mode/json",
-	".md": "ace/mode/markdown",
+	".md":   "ace/mode/markdown",
 	".tmpl": "ace/mode/html",
 }
 
 func PathEdit(localPath string, webPath string, o cms.Options) http.HandlerFunc {
-	if t == nil {
-		Init()
-	}
+
+	Init()
 	onErr := handle.Err(t, o)
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -36,21 +35,20 @@ func PathEdit(localPath string, webPath string, o cms.Options) http.HandlerFunc 
 				return
 			}
 		}
-		data, err := ioutil.ReadFile(localPath+"/"+ filename)
-		if err!=nil {
+		data, err := ioutil.ReadFile(localPath + "/" + filename)
+		if err != nil {
 			logrus.Warning(err)
-			data=[]byte("")
+			data = []byte("")
 		}
 
 		mode, ok := modes[path.Ext(filename)]
-		if !ok{
-			mode="ace/mode/text"
+		if !ok {
+			mode = "ace/mode/text"
 		}
-
 
 		err = t.ExecuteTemplate(w, "editor", o.Extend(
 			cms.Options{
-				"SaveURL":  webPath+"/"+ filename,
+				"SaveURL":  webPath + "/" + filename,
 				"BasePath": "https://pagecdn.io/lib/ace/1.4.12",
 				"Theme":    "ace/theme/tomorrow",
 				"Mode":     mode,
@@ -60,11 +58,10 @@ func PathEdit(localPath string, webPath string, o cms.Options) http.HandlerFunc 
 }
 
 func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFunc {
-	if t == nil {
-		Init()
-	}
-	h := PathEdit(localPath, webPath, o)
+
+	Init()
 	onErr := handle.Err(t, o)
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		filename, ok := params["filename"]
@@ -88,6 +85,5 @@ func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFun
 		if onErr(w, err) {
 			return
 		}
-		h(w, r)
 	}
 }

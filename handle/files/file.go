@@ -10,9 +10,8 @@ import (
 )
 
 func FileEdit(file string, o cms.Options) http.HandlerFunc {
-	if t == nil {
-		Init()
-	}
+
+	Init()
 	onErr := handle.Err(t, o)
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +21,7 @@ func FileEdit(file string, o cms.Options) http.HandlerFunc {
 		}
 		err = t.ExecuteTemplate(w, "editor", o.Extend(
 			cms.Options{
-				"SaveURL":  "/admin/config",
+				"SaveURL":  "/admin/config.yml",
 				"BasePath": "https://pagecdn.io/lib/ace/1.4.12",
 				"Theme":    "ace/theme/tomorrow",
 				"Mode":     "ace/mode/yaml",
@@ -32,11 +31,11 @@ func FileEdit(file string, o cms.Options) http.HandlerFunc {
 }
 
 func FileUpdate(file string, o cms.Options) http.HandlerFunc {
-	if t == nil {
-		Init()
-	}
+
+	Init()
 	h := FileEdit(file, o)
 	onErr := handle.Err(t, o)
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		data, err := io.ReadAll(r.Body)
 		if onErr(w, err) {
@@ -62,5 +61,3 @@ func FileUpdate(file string, o cms.Options) http.HandlerFunc {
 		h(w, r)
 	}
 }
-
-

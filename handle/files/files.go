@@ -13,11 +13,10 @@ import (
 )
 
 type FileInfo struct {
-	Name string
-	Size int64
+	Name    string
+	Size    int64
 	Created string
 }
-
 
 type Editables []string
 
@@ -32,18 +31,18 @@ func (E Editables) Is(ext string) (result bool) {
 
 var ru = "2006-01-02T15:04:05"
 
-
 var Editable = Editables{
 	"tmpl",
 	"js",
 	"css",
+	"md",
 }
 
-func Files(localPath string, path string, o cms.Options)http.HandlerFunc{
-	if t == nil {
-		Init()
-	}
+func Files(localPath string, path string, o cms.Options) http.HandlerFunc {
+
+	Init()
 	onErr := handle.Err(t, o)
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
 
@@ -64,7 +63,7 @@ func Files(localPath string, path string, o cms.Options)http.HandlerFunc{
 		var Files []FileInfo
 		for _, f := range files {
 			// skip dot files
-			if strings.HasPrefix(f.Name(), "."){
+			if strings.HasPrefix(f.Name(), ".") {
 				continue
 			}
 
@@ -76,20 +75,19 @@ func Files(localPath string, path string, o cms.Options)http.HandlerFunc{
 		}
 		err = t.ExecuteTemplate(w, "files", o.Extend(
 			cms.Options{
-				"URL": path,
+				"URL":   path,
 				"Files": Files,
-
 			}))
-		if err!= nil{
+		if err != nil {
 			logrus.Error(err)
 		}
 	}
 }
 
-
-func FileUpload(localPath string, path string, o cms.Options)http.HandlerFunc{
+func FileUpload(localPath string, path string, o cms.Options) http.HandlerFunc {
 	onErr := handle.Err(t, o)
-	h:=Files(localPath, path, o)
+	h := Files(localPath, path, o)
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		if file, handler, err := r.FormFile("file"); err == nil {
 			defer file.Close()

@@ -44,9 +44,8 @@ func main() {
 	}
 
 	//templates
-	Templates := template.Must(template.ParseGlob(Env("TEMPLATES", "templates")+"/*.tmpl"))
+	Templates := template.Must(template.ParseGlob(Env("TEMPLATES", "templates") + "/*.tmpl"))
 	r := mux.NewRouter()
-
 
 	// home
 	r.HandleFunc("/",
@@ -57,7 +56,7 @@ func main() {
 		handle.Logger(
 			handle.Page(Templates, *Options)))
 
-	static:=Env("STATIC", "static/")
+	static := Env("STATIC", "static/")
 	r.PathPrefix("/static/").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir(static))))
 
@@ -86,10 +85,10 @@ func main() {
 	}
 }
 
-func Editor(sub *mux.Router,  ext string, Options *cms.Options){
-	p := "/"+ext
-	l := "static/"+ext
-	w := "/admin/"+ext
+func Editor(sub *mux.Router, ext string, Options *cms.Options) {
+	p := "/" + ext
+	l := "static/" + ext
+	w := "/admin/" + ext
 
 	sub.HandleFunc(p,
 		files.Files(l, w, *Options)).
@@ -110,10 +109,10 @@ func Editor(sub *mux.Router,  ext string, Options *cms.Options){
 
 }
 
-func Imager(sub *mux.Router,  ext string, Options *cms.Options){
-	p := "/"+ext
-	l := "static/"+ext
-	w := "/static/"+ext
+func Imager(sub *mux.Router, ext string, Options *cms.Options) {
+	p := "/" + ext
+	l := "static/" + ext
+	w := "/static/" + ext
 
 	sub.HandleFunc(p,
 		files.Files(l, w, *Options)).Methods("GET")
@@ -122,10 +121,10 @@ func Imager(sub *mux.Router,  ext string, Options *cms.Options){
 		Methods("POST")
 }
 
-func Tmpl(sub *mux.Router,  ext string, Options *cms.Options){
-	p := "/"+ext
+func Tmpl(sub *mux.Router, ext string, Options *cms.Options) {
+	p := "/" + ext
 	l := ext
-	w := "/admin/"+ext
+	w := "/admin/" + ext
 
 	sub.HandleFunc(p,
 		files.Files(l, w, *Options)).

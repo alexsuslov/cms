@@ -27,13 +27,13 @@ func Check(data []byte) error {
 	return yaml.Unmarshal(data, opts)
 }
 
-func (Options *Options)Set(key string, value interface{})*Options{
+func (Options *Options) Set(key string, value interface{}) *Options {
 	o := *Options
-	o[key]=value
+	o[key] = value
 	return &o
 }
 
-func (Options *Options)Refresh(data []byte)error{
+func (Options *Options) Refresh(data []byte) error {
 	return yaml.Unmarshal(data, Options)
 }
 

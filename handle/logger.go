@@ -10,8 +10,8 @@ func Logger(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		user, _, _ := r.BasicAuth()
 		ip := ReadUserIP(r)
-		q:=r.URL.String()
-		start:=time.Now()
+		q := r.URL.String()
+		start := time.Now()
 		h(w, r)
 		logrus.
 			WithField("user", user).
