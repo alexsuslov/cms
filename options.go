@@ -16,12 +16,21 @@ func Load(filename string) (opts *Options, err error) {
 		return
 	}
 	err = yaml.NewDecoder(f).Decode(opts)
-	return
+
+	return opts.
+		Set("Generator", "github.com/alexsuslov/cms").
+		Set("Authtor", "AlexSuslov"), nil
 }
 
 func Check(data []byte) error {
 	opts := &Options{}
 	return yaml.Unmarshal(data, opts)
+}
+
+func (Options *Options)Set(key string, value interface{})*Options{
+	o := *Options
+	o[key]=value
+	return &o
 }
 
 func (Options *Options)Refresh(data []byte)error{

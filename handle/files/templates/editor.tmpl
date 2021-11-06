@@ -1,6 +1,11 @@
 {{define "editor"}}
-     <script src="{{.BasePath}}ace.min.js"></script>
-     <div id="editor" style="position: absolute; top: 56px; right: 0; bottom: 0; left: 0;"></div>
+<!doctype html>
+<html lang="en">
+  {{template "head" .}}
+  <body>
+     <script src="{{.BasePath}}/ace.min.js"></script>
+     <div id="editor" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"></div>
+     {{template "footer" .}}
      <script>
        ace.config.set("basePath", {{.BasePath}});
        var editor = ace.edit("editor");
@@ -20,4 +25,6 @@
           readOnly: true
       });
      </script>
+  </body>
+</html>
 {{end}}

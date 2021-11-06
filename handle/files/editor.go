@@ -5,6 +5,7 @@ import (
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -12,7 +13,15 @@ import (
 	"path"
 )
 
-func PathEditor(localPath string, webPath string, o cms.Options) http.HandlerFunc {
+var modes = map[string]string{
+	".css": "ace/mode/css",
+	".js": "ace/mode/javascript",
+	".json": "ace/mode/json",
+	".md": "ace/mode/markdown",
+	".tmpl": "ace/mode/html",
+}
+
+func PathEdit(localPath string, webPath string, o cms.Options) http.HandlerFunc {
 	if t == nil {
 		Init()
 	}
@@ -28,17 +37,23 @@ func PathEditor(localPath string, webPath string, o cms.Options) http.HandlerFun
 			}
 		}
 		data, err := ioutil.ReadFile(localPath+"/"+ filename)
-		if onErr(w, err) {
-			return
+		if err!=nil {
+			logrus.Warning(err)
+			data=[]byte("")
 		}
 
-		ext := path.Ext(filename)
+		mode, ok := modes[path.Ext(filename)]
+		if !ok{
+			mode="ace/mode/text"
+		}
+
+
 		err = t.ExecuteTemplate(w, "editor", o.Extend(
 			cms.Options{
 				"SaveURL":  webPath+"/"+ filename,
 				"BasePath": "https://pagecdn.io/lib/ace/1.4.12",
 				"Theme":    "ace/theme/tomorrow",
-				"Mode":     "ace/mode/"+ext[1:],
+				"Mode":     mode,
 				"Data":     string(data),
 			}))
 	}
@@ -48,7 +63,7 @@ func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFun
 	if t == nil {
 		Init()
 	}
-	h := PathEditor(localPath, webPath, o)
+	h := PathEdit(localPath, webPath, o)
 	onErr := handle.Err(t, o)
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)

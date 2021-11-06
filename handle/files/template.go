@@ -1,6 +1,13 @@
 package files
 
-import "html/template"
+import (
+	"embed"
+	"html/template"
+)
+
+
+//go:embed templates/*
+var templates embed.FS
 
 var t *template.Template
 

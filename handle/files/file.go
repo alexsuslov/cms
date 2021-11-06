@@ -31,7 +31,7 @@ func FileEdit(file string, o cms.Options) http.HandlerFunc {
 	}
 }
 
-func FilePost(file string, o cms.Options) http.HandlerFunc {
+func FileUpdate(file string, o cms.Options) http.HandlerFunc {
 	if t == nil {
 		Init()
 	}
@@ -62,3 +62,5 @@ func FilePost(file string, o cms.Options) http.HandlerFunc {
 		h(w, r)
 	}
 }
+
+
