@@ -7,8 +7,12 @@ This project is made as an opportunity study.
 - sorting
 - filtering
 - pagination
+- backup backet
+- restore backet items
 - upload backet item
-- mass upload backet items
+- file change history
+- backet item change history
+
 
 ## run files only
 ```
