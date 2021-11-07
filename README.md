@@ -6,7 +6,7 @@ This project is made as an opportunity study.
 
 - sorting
 - filtering
-- paginatin
+- pagination
 
 ## run files only
 ```
