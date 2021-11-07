@@ -7,6 +7,8 @@ This project is made as an opportunity study.
 - sorting
 - filtering
 - pagination
+- upload backet item
+- mass upload backet items
 
 ## run files only
 ```
