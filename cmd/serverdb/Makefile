@@ -1,3 +1,5 @@
+TODAY=$(shell date +%y-%m-%d)
+
 serve:
 	go run server.go
 
