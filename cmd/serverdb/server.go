@@ -67,7 +67,7 @@ func main() {
 		handle.Logger(
 			handle.Page(Templates, *Options)))
 
-	static := Env("STATIC", "static/")
+	static := Env("STATIC", "static")
 	r.PathPrefix("/static/").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir(static))))
 
@@ -78,9 +78,9 @@ func main() {
 
 	// edit config
 	sub.HandleFunc("/config.yml",
-		manager.FileEdit("config.yml", *Options)).Methods("GET")
+		manager.FileEdit(Env("CONFIG", "config.yml"), *Options)).Methods("GET")
 	sub.HandleFunc("/config.yml",
-		manager.FileUpdate("config.yml", *Options)).Methods("POST")
+		manager.FileUpdate(Env("CONFIG", "config.yml"), *Options)).Methods("POST")
 
 	// css
 	Editor(sub, "css", Options)
@@ -125,8 +125,11 @@ func Backets(store *model.Store, sub *mux.Router, ext string, Options *cms.Optio
 }
 
 func Editor(sub *mux.Router, ext string, Options *cms.Options) {
+
+	static := Env("STATIC", "static")
+
 	p := "/" + ext
-	l := "static/" + ext
+	l := static+ "/" + ext
 	w := "/admin/" + ext
 
 	sub.HandleFunc(p,
@@ -138,7 +141,7 @@ func Editor(sub *mux.Router, ext string, Options *cms.Options) {
 		Methods("POST")
 
 	p = fmt.Sprintf("/%s/{filename}", ext)
-	l = fmt.Sprintf("static/%s", ext)
+	l = fmt.Sprintf("%s/%s",static, ext)
 	w = fmt.Sprintf("/admin/%s", ext)
 
 	sub.HandleFunc(p,
@@ -150,8 +153,10 @@ func Editor(sub *mux.Router, ext string, Options *cms.Options) {
 }
 
 func Imager(sub *mux.Router, ext string, Options *cms.Options) {
+	static := Env("STATIC", "static/")
+
 	p := "/" + ext
-	l := "static/" + ext
+	l := static+"/" + ext
 	w := "/static/" + ext
 
 	sub.HandleFunc(p,

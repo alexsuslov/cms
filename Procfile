@@ -1,1 +1,0 @@
-web: web: bin/server
