@@ -4,8 +4,9 @@ This project is made as an opportunity study.
 
 ## Planred
 
-- BoltDB
-- authorization
+- sorting
+- filtering
+- paginatin
 
 ## run files only
 ```
