@@ -4,8 +4,15 @@ This project is made as an opportunity study.
 
 ## Planred
 
-- BoltDB
-- authorization
+- sorting
+- filtering
+- pagination
+- backup backet
+- restore backet items
+- upload backet item
+- file change history ( list, diff view)
+- backet item change history ( list, diff view)
+
 
 ## run files only
 ```
