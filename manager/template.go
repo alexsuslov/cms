@@ -1,4 +1,4 @@
-package files
+package manager
 
 import (
 	"embed"
@@ -14,7 +14,7 @@ var t *template.Template
 func Init() {
 	if t == nil {
 		var err error
-		t= template.New("base").
+		t = template.New("base").
 			Funcs(sprig.FuncMap())
 		t, err = t.ParseFS(templates, "templates/*")
 		if err != nil {

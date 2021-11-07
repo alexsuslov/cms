@@ -1,4 +1,4 @@
-package files
+package manager
 
 import (
 	"github.com/alexsuslov/cms"

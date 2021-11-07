@@ -1,4 +1,4 @@
-package files
+package manager
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"github.com/alexsuslov/cms/handle"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/validator.v2"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -19,6 +20,10 @@ var modes = map[string]string{
 	".json": "ace/mode/json",
 	".md":   "ace/mode/markdown",
 	".tmpl": "ace/mode/html",
+}
+
+type vParams struct {
+	Filename string `validate:"regexp=^[\w\-. ]+$"`
 }
 
 func PathEdit(localPath string, webPath string, o cms.Options) http.HandlerFunc {
@@ -35,7 +40,13 @@ func PathEdit(localPath string, webPath string, o cms.Options) http.HandlerFunc 
 				return
 			}
 		}
-		filename = path.Base(filename)
+
+		q := vParams{filename}
+		err := validator.Validate(q)
+		if onErr(w, err) {
+			return
+		}
+
 		data, err := ioutil.ReadFile(localPath + "/" + filename)
 		if err != nil {
 			logrus.Warning(err)
@@ -72,7 +83,11 @@ func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFun
 				return
 			}
 		}
-		filename = path.Base(filename)
+		q := vParams{filename}
+		err := validator.Validate(q)
+		if onErr(w, err) {
+			return
+		}
 
 		data, err := io.ReadAll(r.Body)
 		if onErr(w, err) {

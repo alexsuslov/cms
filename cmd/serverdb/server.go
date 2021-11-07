@@ -5,7 +5,8 @@ import (
 	"github.com/Masterminds/sprig"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
-	"github.com/alexsuslov/cms/handle/manager"
+	"github.com/alexsuslov/cms/manager"
+	"github.com/alexsuslov/cms/model"
 	"github.com/alexsuslov/godotenv"
 	"github.com/gorilla/mux"
 	"html/template"
@@ -49,6 +50,12 @@ func main() {
 		template.New("base").
 			Funcs(sprig.FuncMap()).
 			ParseGlob(Env("TEMPLATES", "templates") + "/*.tmpl"))
+
+	Store, err := model.NewStoreBDB(Env("STORE", "db.bolt"))
+	if err != nil {
+		panic(err)
+	}
+
 	r := mux.NewRouter()
 
 	// home
@@ -66,17 +73,21 @@ func main() {
 
 	sub := r.PathPrefix("/admin").Subrouter()
 
+	mid := model.NewAuthMid(Store, "admin")
+	sub.Use(mid.Middleware)
+
 	// edit config
 	sub.HandleFunc("/config.yml",
 		manager.FileEdit("config.yml", *Options)).Methods("GET")
 	sub.HandleFunc("/config.yml",
 		manager.FileUpdate("config.yml", *Options)).Methods("POST")
 
-	// admin interface
-	files(sub, "css", Options)
-	files(sub, "js", Options)
-	images(sub, "images", Options)
-	templates(sub, "templates", Options)
+	// css
+	Editor(sub, "css", Options)
+	Editor(sub, "js", Options)
+	Imager(sub, "images", Options)
+	Tmpl(sub, "templates", Options)
+	Backets(Store, sub, "buckets", Options)
 
 	httpAddr := fmt.Sprintf("%s:%s",
 		Env("HTTP_HOST", "0.0.0.0"),
@@ -89,19 +100,31 @@ func main() {
 	}
 }
 
-func images(sub *mux.Router, ext string, Options *cms.Options) {
+func Backets(store *model.Store, sub *mux.Router, ext string, Options *cms.Options) {
 	p := "/" + ext
-	l := "static/" + ext
-	w := "/static/" + ext
+	w := "/admin/" + ext
+	sub.HandleFunc(p,
+		manager.Buckets(store, w, *Options)).
+		Methods("GET")
+
+	p = fmt.Sprintf("/%s/{backetname}", ext)
 
 	sub.HandleFunc(p,
-		manager.Files(l, w, *Options)).Methods("GET")
+		manager.Bucket(store, w, *Options)).
+		Methods("GET")
+
+	p = fmt.Sprintf("/%s/{backetname}/{item}", ext)
+
 	sub.HandleFunc(p,
-		manager.FileUpload(l, w, *Options)).
-		Methods("POST")
+		manager.BucketItem(store, w, *Options)).
+		Methods("GET")
+
+	sub.HandleFunc(p,
+		manager.BucketItemUpdate(store, w, *Options)).Methods("POST")
+
 }
 
-func files(sub *mux.Router, ext string, Options *cms.Options) {
+func Editor(sub *mux.Router, ext string, Options *cms.Options) {
 	p := "/" + ext
 	l := "static/" + ext
 	w := "/admin/" + ext
@@ -120,6 +143,7 @@ func files(sub *mux.Router, ext string, Options *cms.Options) {
 
 	sub.HandleFunc(p,
 		manager.PathEdit(l, w, *Options)).Methods("GET")
+
 	sub.HandleFunc(p,
 		manager.PathUpdate(l, w, *Options)).Methods("POST")
 
@@ -137,7 +161,7 @@ func Imager(sub *mux.Router, ext string, Options *cms.Options) {
 		Methods("POST")
 }
 
-func templates(sub *mux.Router, ext string, Options *cms.Options) {
+func Tmpl(sub *mux.Router, ext string, Options *cms.Options) {
 	p := "/" + ext
 	l := ext
 	w := "/admin/" + ext

@@ -1,0 +1,31 @@
+{{define "bucket"}}
+<!doctype html>
+<html lang="en">
+  {{template "head" .}}
+  <body>
+    <div class="container">
+      {{template "navbar" .}}
+{{/*      {{template "upload" .}}*/}}
+    <table class="table">
+      <tbody>
+        {{$Path:=.URL}}
+        {{range $key, $value := .Items }}
+          <tr >
+            <th>
+              <a href="{{$Path}}/{{$key}}">{{$key}}</a>
+            </th>
+            <td class="text-right">{{ printf "%.80s" $value }}</td>
+            <td class="text-right">
+              <button class="btn btn-warning remover" data-key={{$key}} ><i class="bi bi-trash" data-key={{$key}}></i></button>
+            </td>
+          </tr>
+        {{end}}
+        </tbody>
+    </table>
+    {{template "footer" .}}
+    </div>
+    {{template "scripts" .}}
+    {{template "script_remover" .}}
+  </body>
+</html>
+{{end}}

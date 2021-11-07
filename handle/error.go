@@ -4,6 +4,7 @@ import (
 	"github.com/alexsuslov/cms"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"time"
 )
 
 type IExtend interface {
@@ -14,6 +15,7 @@ func Err(t ITemplate, o interface{}) func(w http.ResponseWriter, err error) bool
 	return func(w http.ResponseWriter, err error) bool {
 		if err != nil {
 			if err.Error() == "401" {
+				time.Sleep(2 * time.Second)
 				w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
 				w.WriteHeader(401)
 				return true

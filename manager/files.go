@@ -1,10 +1,11 @@
-package files
+package manager
 
 import (
 	"fmt"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/validator.v2"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -39,17 +40,17 @@ var Editable = Editables{
 	"md",
 }
 
-func addPath(localPath  string, filenames []string)(paths []string){
+func addPath(localPath string, filenames []string) (paths []string) {
 	paths = []string{}
-	for _, filename := range filenames{
+	for _, filename := range filenames {
 		f := path.Base(filename)
-		paths= append(paths, fmt.Sprintf("%s/%s", localPath, f))
+		paths = append(paths, fmt.Sprintf("%s/%s", localPath, f))
 	}
 	return
 }
 
-func rmFiles(filePaths[]string)error{
-	for _, filePath := range filePaths{
+func rmFiles(filePaths []string) error {
+	for _, filePath := range filePaths {
 		logrus.WithField("filepath", filePath).Info("remove file")
 		err := os.Remove(filePath)
 		if err != nil {
@@ -59,7 +60,6 @@ func rmFiles(filePaths[]string)error{
 	}
 	return nil
 }
-
 
 func Files(localPath string, path string, o cms.Options) http.HandlerFunc {
 
@@ -103,6 +103,10 @@ func Files(localPath string, path string, o cms.Options) http.HandlerFunc {
 	}
 }
 
+type vUpload struct {
+	Filename string `validate:"regexp=^[\w\-. ]+$"`
+}
+
 func FileUpload(localPath string, path string, o cms.Options) http.HandlerFunc {
 	onErr := handle.Err(t, o)
 	h := Files(localPath, path, o)
@@ -110,8 +114,13 @@ func FileUpload(localPath string, path string, o cms.Options) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if file, handler, err := r.FormFile("file"); err == nil {
 			defer file.Close()
-			filename := handler.Filename
-			filePath := fmt.Sprintf("%s/%s", localPath, filename)
+			q := vUpload{handler.Filename}
+			err := validator.Validate(q)
+			if onErr(w, err) {
+				return
+			}
+
+			filePath := fmt.Sprintf("%s/%s", localPath, q.Filename)
 			f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
 			if err == nil {
 				_, err = io.Copy(f, file)

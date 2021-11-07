@@ -1,0 +1,10 @@
+{
+  "name": "Small simple cms",
+  "description": "This project is made as an opportunity study",
+  "keywords": [
+    "go",
+    "example"
+  ],
+  "website": "http://github.com/alexsuslov/cms",
+  "repository": "http://github.com/alexsuslov/cms"
+}

@@ -1,4 +1,4 @@
-package files
+package manager
 
 import (
 	"reflect"
@@ -19,9 +19,9 @@ func TestAddPath(t *testing.T) {
 			"AddPath",
 			args{
 				"static",
-				[]string{"test.md", "../../../../../../etc/passwd"},
+				[]string{"test.md", "../../../../../../etc/passwd", "..%5c..%5c..%5c..%5c..%5cpasswd"},
 			},
-			[]string{"static/test.md", "static/passwd"},
+			[]string{"static/test.md", "static/passwd", "static/passwd"},
 		},
 	}
 	for _, tt := range tests {

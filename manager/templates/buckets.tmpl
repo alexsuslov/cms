@@ -1,0 +1,46 @@
+{{define "buckets"}}
+<!doctype html>
+<html lang="en">
+  {{template "head" .}}
+  <body>
+    <div class="container">
+      {{template "navbar" .}}
+{{/*      {{template "upload" .}}*/}}
+    <table class="table">
+      <tbody>
+        {{$Path:=.URL}}
+        {{range .Buckets}}
+          <tr >
+            <th>
+              <a href="{{$Path}}/{{.Name}}">{{.Name}}</a>
+            </th>
+            <td class="text-right">{{.Counter}}</td>
+            <td class="text-right">
+              <button class="btn btn-warning remover" data-key={{.Name}} ><i class="bi bi-trash" data-key={{.Name}}></i></button>
+            </td>
+          </tr>
+        {{end}}
+        </tbody>
+    </table>
+    {{template "footer" .}}
+    </div>
+    {{template "scripts" .}}
+    {{template "script_remover" .}}
+  </body>
+</html>
+{{end}}
+
+
+{{define "upload"}}
+<form method="post" enctype="multipart/form-data">
+   <div class="mb-3">
+     <div class="input-group mb-3">
+       <span class="input-group-text">
+         <i class="bi bi-folder2-open"></i></span>
+       <input class="form-control" name="file" type="file"/>
+       <button type="submit" class="btn btn-outline-primary">
+         <i class="bi bi-cloud-upload"></i></button>
+     </div>
+   </div>
+</form>
+{{end}}

@@ -5,8 +5,10 @@ go 1.17
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/alexsuslov/godotenv v1.3.1
+	github.com/boltdb/bolt v1.3.1
 	github.com/gorilla/mux v1.8.0
 	github.com/sirupsen/logrus v1.8.1
+	gopkg.in/validator.v2 v2.0.0-20210331031555-b37d688a7fb0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
