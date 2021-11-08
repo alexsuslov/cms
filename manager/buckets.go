@@ -38,7 +38,7 @@ func Buckets(s *model.Store, path string, o cms.Options) http.HandlerFunc {
 		// rm bucket
 		rm, ok := query["rm"]
 		if ok {
-			for _, bucket:=range rm{
+			for _, bucket := range rm {
 				s.DB.Update(func(tx *bolt.Tx) error {
 					return tx.DeleteBucket([]byte(bucket))
 				})

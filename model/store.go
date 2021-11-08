@@ -17,7 +17,7 @@ func NewStoreBDB(filename string) (store *Store, err error) {
 	if err != nil {
 		mapping := bleve.NewIndexMapping()
 		index, err = bleve.New(search, mapping)
-		if err!= nil{
+		if err != nil {
 			log.Println(err)
 		}
 	}

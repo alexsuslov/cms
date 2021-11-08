@@ -6,7 +6,6 @@ import (
 	"github.com/blevesearch/bleve/v2"
 	"github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -15,27 +14,31 @@ type ITemplate interface {
 }
 
 func Home(S *model.Store, T ITemplate, o cms.Options) func(http.ResponseWriter, *http.Request) {
+
+	onErr := Err(T, o)
 	return func(w http.ResponseWriter, r *http.Request) {
-		q:= r.URL.Query()
+		q := r.URL.Query()
+		req := q.Get("q")
+		if req == "" {
+			err := T.ExecuteTemplate(w, "home", o)
+			if err != nil {
+				logrus.Error(err)
+			}
+			return
+		}
+
 		query := bleve.NewQueryStringQuery(q.Get("q"))
 		searchRequest := bleve.NewSearchRequest(query)
 		searchResult, err := S.Index.Search(searchRequest)
-		if err!= nil{
-			log.Println(err)
-		}else{
-			if searchResult.Total > 0{
-				err = T.ExecuteTemplate(w, "search_result", o.Extend(cms.Options{
-					"Hits": searchResult.Hits,
-					"Total":searchResult.Total,
-				}))
-				if err != nil {
-					logrus.Error(err)
-				}
-				return
-			}
+		if onErr(w, err) {
+			return
 		}
 
-		err = T.ExecuteTemplate(w, "home", o)
+		err = T.ExecuteTemplate(w, "search_result", o.Extend(cms.Options{
+			"Hits":  searchResult.Hits,
+			"Total": searchResult.Total,
+		}))
+
 		if err != nil {
 			logrus.Error(err)
 		}

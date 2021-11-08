@@ -18,7 +18,6 @@ var WIKI = []byte("wiki_pages")
 var VALUES = []byte("wiki_values")
 
 func WikiPage(t ITemplate, s *model.Store, o cms.Options) func(w http.ResponseWriter, r *http.Request) {
-
 	s.DB.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists(WIKI)
 		if err != nil {
@@ -67,6 +66,10 @@ func WikiPage(t ITemplate, s *model.Store, o cms.Options) func(w http.ResponseWr
 					return err
 				}
 				data = buf.Bytes()
+				err = s.Index.Index(r.URL.String(), string(data))
+				if err != nil {
+					logrus.WithField("index.Index", r.URL.String()).Warning(err)
+				}
 			}
 
 			output := markdown.ToHTML(data, nil, nil)

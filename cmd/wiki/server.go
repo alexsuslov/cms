@@ -89,7 +89,7 @@ func main() {
 	// wiki page
 	r.HandleFunc("/{key}",
 		handle.Logger(
-			WikiPage(Templates, Store, *Options)))
+			handle.WikiPage(Templates, Store, *Options)))
 
 	static := Env("STATIC", "static")
 	r.PathPrefix("/static/").Handler(
@@ -105,4 +105,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-

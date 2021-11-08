@@ -107,7 +107,6 @@ func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFun
 	}
 }
 
-
 func Editor(sub *mux.Router, ext string, Options *cms.Options) {
 
 	static := Env("STATIC", "static")
