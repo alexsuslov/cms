@@ -62,7 +62,7 @@ func main() {
 	// home
 	r.HandleFunc("/",
 		handle.Logger(
-			handle.Home(Store, Templates, Options)))
+			handle.HomeSearch(Store, Templates, Options)))
 
 	// manager
 	sub := r.PathPrefix("/admin").Subrouter()

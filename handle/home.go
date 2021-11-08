@@ -13,7 +13,20 @@ type ITemplate interface {
 	ExecuteTemplate(wr io.Writer, name string, data interface{}) error
 }
 
-func Home(S *model.Store, T ITemplate, o *cms.Options) func(http.ResponseWriter, *http.Request) {
+func Home( T ITemplate, o *cms.Options) func(http.ResponseWriter, *http.Request) {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		err := T.ExecuteTemplate(w, "home", o)
+		if err != nil {
+			logrus.Error(err)
+		}
+		return
+
+	}
+}
+
+func HomeSearch(S *model.Store, T ITemplate, o *cms.Options) func(http.ResponseWriter, *http.Request) {
 
 	onErr := Err(T, o)
 	return func(w http.ResponseWriter, r *http.Request) {

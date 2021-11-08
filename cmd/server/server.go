@@ -54,7 +54,7 @@ func main() {
 	// home
 	r.HandleFunc("/",
 		handle.Logger(
-			handle.Home(Templates, *Options)))
+			handle.Home(Templates, Options)))
 	// page
 	r.HandleFunc("/{filename}.html",
 		handle.Logger(
