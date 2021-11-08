@@ -107,13 +107,13 @@ func Backets(store *model.Store, sub *mux.Router, ext string, Options *cms.Optio
 		manager.Buckets(store, w, *Options)).
 		Methods("GET")
 
-	p = fmt.Sprintf("/%s/{backetname}", ext)
+	p = fmt.Sprintf("/%s/{bucketname}", ext)
 
 	sub.HandleFunc(p,
 		manager.Bucket(store, w, *Options)).
 		Methods("GET")
 
-	p = fmt.Sprintf("/%s/{backetname}/{item}", ext)
+	p = fmt.Sprintf("/%s/{bucketname}/{item}", ext)
 
 	sub.HandleFunc(p,
 		manager.BucketItem(store, w, *Options)).
@@ -129,7 +129,7 @@ func Editor(sub *mux.Router, ext string, Options *cms.Options) {
 	static := Env("STATIC", "static")
 
 	p := "/" + ext
-	l := static+ "/" + ext
+	l := static + "/" + ext
 	w := "/admin/" + ext
 
 	sub.HandleFunc(p,
@@ -141,7 +141,7 @@ func Editor(sub *mux.Router, ext string, Options *cms.Options) {
 		Methods("POST")
 
 	p = fmt.Sprintf("/%s/{filename}", ext)
-	l = fmt.Sprintf("%s/%s",static, ext)
+	l = fmt.Sprintf("%s/%s", static, ext)
 	w = fmt.Sprintf("/admin/%s", ext)
 
 	sub.HandleFunc(p,
@@ -156,7 +156,7 @@ func Imager(sub *mux.Router, ext string, Options *cms.Options) {
 	static := Env("STATIC", "static/")
 
 	p := "/" + ext
-	l := static+"/" + ext
+	l := static + "/" + ext
 	w := "/static/" + ext
 
 	sub.HandleFunc(p,

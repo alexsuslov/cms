@@ -33,6 +33,17 @@ func Buckets(s *model.Store, path string, o cms.Options) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		items := []Item{}
+		query := r.URL.Query()
+
+		// rm bucket
+		rm, ok := query["rm"]
+		if ok {
+			for _, bucket:=range rm{
+				s.DB.Update(func(tx *bolt.Tx) error {
+					return tx.DeleteBucket([]byte(bucket))
+				})
+			}
+		}
 		// todo: replace universal func with filter, limit, offset
 		err := s.DB.View(func(tx *bolt.Tx) error {
 			err := tx.ForEach(func(name []byte, _ *bolt.Bucket) error {

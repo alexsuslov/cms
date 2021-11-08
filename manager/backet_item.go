@@ -19,7 +19,7 @@ func BucketItem(s *model.Store, path string, o cms.Options) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
-		bucketName, ok := params["backetname"]
+		bucketName, ok := params["bucket"]
 		if !ok {
 			err := fmt.Errorf("404")
 			if onErr(w, err) {
@@ -68,7 +68,7 @@ func BucketItemUpdate(s *model.Store, path string, o cms.Options) http.HandlerFu
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
-		bucketName, ok := params["backetname"]
+		bucketName, ok := params["bucket"]
 		if !ok {
 			err := fmt.Errorf("404")
 			if onErr(w, err) {

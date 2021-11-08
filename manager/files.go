@@ -69,9 +69,10 @@ func Files(localPath string, path string, o cms.Options) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
 
-		// rm file
-		if files, ok := query["rm"]; ok {
-			rmFiles(addPath(localPath, files))
+		// rm fill
+		rm, ok := query["rm"]
+		if ok {
+			rmFiles(addPath(localPath, rm))
 		}
 
 		files, err := ioutil.ReadDir(localPath)

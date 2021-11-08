@@ -106,3 +106,32 @@ func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFun
 		}
 	}
 }
+
+
+func Editor(sub *mux.Router, ext string, Options *cms.Options) {
+
+	static := Env("STATIC", "static")
+
+	p := "/" + ext
+	l := static + "/" + ext
+	w := "/admin/" + ext
+
+	sub.HandleFunc(p,
+		Files(l, w, *Options)).
+		Methods("GET")
+
+	sub.HandleFunc(p,
+		FileUpload(l, w, *Options)).
+		Methods("POST")
+
+	p = fmt.Sprintf("/%s/{filename}", ext)
+	l = fmt.Sprintf("%s/%s", static, ext)
+	w = fmt.Sprintf("/admin/%s", ext)
+
+	sub.HandleFunc(p,
+		PathEdit(l, w, *Options)).Methods("GET")
+
+	sub.HandleFunc(p,
+		PathUpdate(l, w, *Options)).Methods("POST")
+
+}

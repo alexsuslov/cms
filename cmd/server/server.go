@@ -5,7 +5,7 @@ import (
 	"github.com/Masterminds/sprig"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
-	"github.com/alexsuslov/cms/handle/manager"
+	"github.com/alexsuslov/cms/manager"
 	"github.com/alexsuslov/godotenv"
 	"github.com/gorilla/mux"
 	"html/template"

@@ -18,14 +18,14 @@ func Bucket(s *model.Store, path string, o cms.Options) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
-		backetname, ok := params["backetname"]
+		bucketname, ok := params["bucket"]
 		if !ok {
 			onErr(w, fmt.Errorf("404"))
 		}
 
 		// todo: replace universal func with filter, limit, offset
 		err := s.DB.View(func(tx *bolt.Tx) error {
-			b := tx.Bucket([]byte(backetname))
+			b := tx.Bucket([]byte(bucketname))
 			if b == nil {
 				return fmt.Errorf("404")
 			}
@@ -43,7 +43,7 @@ func Bucket(s *model.Store, path string, o cms.Options) http.HandlerFunc {
 
 			err = t.ExecuteTemplate(w, "bucket", o.Extend(
 				cms.Options{
-					"URL":   path + "/" + backetname,
+					"URL":   path + "/" + bucketname,
 					"Items": items,
 				}))
 			if err != nil {

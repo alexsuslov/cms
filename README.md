@@ -7,23 +7,27 @@ This project is made as an opportunity study.
 - sorting
 - filtering
 - pagination
-- backup backet
-- restore backet items
-- upload backet item
+- backup bucket
+- restore bucket items
+- upload bucket item
 - file change history ( list, diff view)
-- backet item change history ( list, diff view)
+- bucket item change history ( list, diff view)
 
 
 ## run files only
 ```
-(cd cmd/server; go run server.go)
+make cms
 ```
 ![tmpls](https://github.com/alexsuslov/cms/raw/main/cmd/server/static/images/run.jpg)
 
+### Filemanager preview
 
-## run with BoltDB
+![tmpls](https://github.com/alexsuslov/cms/raw/main/cmd/server/static/images/tmpls.jpg)
+
+
+## run with Bolt DB example
 ```
-(cd cmd/serverdb; go run server.go)
+make bolt
 ```
 
 ### set default admin user 
@@ -44,6 +48,8 @@ add
 ```
 then press cmd+s(ctr+s) to save
 
-## Filemanager preview
+## Markdown Wiki
+```
+make wiki
+```
 
-![tmpls](https://github.com/alexsuslov/cms/raw/main/cmd/server/static/images/tmpls.jpg)
