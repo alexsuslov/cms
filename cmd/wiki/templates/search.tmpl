@@ -19,11 +19,20 @@
 <div class="container">
   {{template "navbar" .}}
     <h2>Найдено {{.Total}} стр.</h2>
-    {{range .Hits}}
-        <a href="{{.ID}}" >{{.ID}} (Score {{.Score}} /  HitNumber {{.HitNumber}})</a>
-        <hr />
 
+    <ol class="list-group list-group-numbered">
+    {{range .Hits}}
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">
+               <a class="btn btn-link" href="{{.ID}}" > {{.ID}} </a>
+            </div>
+              {{.HitNumber}} повтор.
+          </div>
+          <span class="badge bg-primary rounded-pill">{{printf "%.2f" .Score}}</span>
+        </li>
     {{end}}
+    </ol>
   {{template "footer" .}}
 </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

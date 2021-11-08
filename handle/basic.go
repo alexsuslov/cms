@@ -29,7 +29,6 @@ func BasicAuth(t ITemplate, s IStore, o *cms.Options) BasicAuthFunc {
 			name, pass, ok := r.BasicAuth()
 			if !ok {
 				onErr(w, fmt.Errorf("401"))
-
 			}
 			user, err := s.GetUser(name)
 			if onErr(w, err) {

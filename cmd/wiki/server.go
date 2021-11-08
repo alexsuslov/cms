@@ -62,7 +62,7 @@ func main() {
 	// home
 	r.HandleFunc("/",
 		handle.Logger(
-			handle.Home(Store, Templates, *Options)))
+			handle.Home(Store, Templates, Options)))
 
 	// manager
 	sub := r.PathPrefix("/admin").Subrouter()
@@ -89,7 +89,7 @@ func main() {
 	// wiki page
 	r.HandleFunc("/{key}",
 		handle.Logger(
-			handle.WikiPage(Templates, Store, *Options)))
+			handle.WikiPage(Templates, Store, Options)))
 
 	static := Env("STATIC", "static")
 	r.PathPrefix("/static/").Handler(

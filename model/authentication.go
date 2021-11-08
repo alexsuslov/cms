@@ -46,6 +46,16 @@ func (amw *AuthenticationMiddleware) Middleware(next http.Handler) http.Handler 
 				Warning("user try open some restricted")
 			err = fmt.Errorf("401")
 		}
+		expire := time.Now().AddDate(0, 0, 1)
+		cookie := http.Cookie{
+			Name:"editor",
+			Value:"Yes",
+			Path: "/",
+			Domain: r.URL.Host,
+			Expires: expire,
+			RawExpires: expire.Format(time.UnixDate),
+		}
+		http.SetCookie(w, &cookie)
 
 		r.Header.Set("roles", strings.Join(user.GetRoles(), "|"))
 		next.ServeHTTP(w, r)

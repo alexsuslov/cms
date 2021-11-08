@@ -17,7 +17,7 @@ import (
 var WIKI = []byte("wiki_pages")
 var VALUES = []byte("wiki_values")
 
-func WikiPage(t ITemplate, s *model.Store, o cms.Options) func(w http.ResponseWriter, r *http.Request) {
+func WikiPage(t ITemplate, s *model.Store, o *cms.Options) func(w http.ResponseWriter, r *http.Request) {
 	s.DB.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists(WIKI)
 		if err != nil {
@@ -79,9 +79,12 @@ func WikiPage(t ITemplate, s *model.Store, o cms.Options) func(w http.ResponseWr
 		})
 		if err != nil {
 			//	on 300 redirect to editor
-			if err.Error() == "302" {
+			cookie,  _ := r.Cookie("editor")
+			if cookie!=nil && cookie.Value=="Yes" && err.Error() == "302" {
 				http.Redirect(w, r, "/admin/buckets/wiki_pages/"+key, 302)
 				return
+			} else{
+				err= fmt.Errorf("404")
 			}
 			onErr(w, err)
 			return

@@ -11,7 +11,7 @@ type IExtend interface {
 	Extend(m cms.Options) cms.Options
 }
 
-func Err(t ITemplate, o interface{}) func(w http.ResponseWriter, err error) bool {
+func Err(t ITemplate, o IExtend) func(w http.ResponseWriter, err error) bool {
 	return func(w http.ResponseWriter, err error) bool {
 		if err != nil {
 			if err.Error() == "401" {
@@ -25,11 +25,12 @@ func Err(t ITemplate, o interface{}) func(w http.ResponseWriter, err error) bool
 				_ = t.ExecuteTemplate(w, "404", o)
 				return true
 			}
+			logrus.Errorf("w.Write %v", err)
+
 			w.WriteHeader(500)
-			_, err = w.Write([]byte(err.Error()))
-			if err != nil {
-				logrus.Errorf("w.Write %v", err)
-			}
+			_ = t.ExecuteTemplate(w, "500", o.Extend(cms.Options{
+				"Error":err.Error(),
+			}))
 			return true
 		}
 		return false
