@@ -32,7 +32,7 @@ func Env(key string, def string) string {
 }
 
 func main() {
-	log.Printf("Starting " + getMessage())
+	log.Printf("Starting WIKI" + getMessage())
 
 	// load env
 	if err := godotenv.Load(".env"); err != nil {
@@ -55,13 +55,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer Store.Close()
 
 	r := mux.NewRouter()
 
 	// home
 	r.HandleFunc("/",
 		handle.Logger(
-			handle.Home(Templates, *Options)))
+			handle.Home(Store, Templates, *Options)))
 
 	// manager
 	sub := r.PathPrefix("/admin").Subrouter()
@@ -88,7 +89,7 @@ func main() {
 	// wiki page
 	r.HandleFunc("/{key}",
 		handle.Logger(
-			handle.WikiPage(Templates, Store, *Options)))
+			WikiPage(Templates, Store, *Options)))
 
 	static := Env("STATIC", "static")
 	r.PathPrefix("/static/").Handler(
@@ -104,3 +105,4 @@ func main() {
 		log.Fatal(err)
 	}
 }
+

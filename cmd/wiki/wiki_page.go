@@ -1,24 +1,31 @@
-package handle
+package main
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/alexsuslov/cms"
+	"github.com/alexsuslov/cms/handle"
 	"github.com/alexsuslov/cms/model"
 	"github.com/boltdb/bolt"
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"html/template"
+	"io"
 	"net/http"
 )
 
 var WIKI = []byte("wiki_pages")
 var VALUES = []byte("wiki_values")
 
-func WikiPage(t ITemplate, s *model.Store, o cms.Options) func(w http.ResponseWriter, r *http.Request) {
 
+
+type ITemplate interface {
+	ExecuteTemplate(wr io.Writer, name string, data interface{}) error
+}
+
+func WikiPage(t ITemplate, s *model.Store, o cms.Options) func(w http.ResponseWriter, r *http.Request) {
 	s.DB.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists(WIKI)
 		if err != nil {
@@ -28,7 +35,7 @@ func WikiPage(t ITemplate, s *model.Store, o cms.Options) func(w http.ResponseWr
 		return err
 	})
 
-	onErr := Err(t, o)
+	onErr := handle.Err(t, o)
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		key, keyOk := params["key"]
@@ -67,6 +74,10 @@ func WikiPage(t ITemplate, s *model.Store, o cms.Options) func(w http.ResponseWr
 					return err
 				}
 				data = buf.Bytes()
+				err = s.Index.Index(r.URL.String(), string(data))
+				if err!= nil{
+					logrus.WithField("index.Index", r.URL.String()).Warning(err)
+				}
 			}
 
 			output := markdown.ToHTML(data, nil, nil)
