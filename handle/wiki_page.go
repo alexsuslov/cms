@@ -66,11 +66,15 @@ func WikiPage(t ITemplate, s *model.Store, o *cms.Options) func(w http.ResponseW
 					return err
 				}
 				data = buf.Bytes()
-				err = s.Index.Index(r.URL.String(), string(data))
-				if err != nil {
-					logrus.WithField("index.Index", r.URL.String()).Warning(err)
-				}
+
 			}
+			//indexer
+			err := s.Index.Index(r.URL.String(), string(data))
+			if err != nil {
+				logrus.WithField("index.Index", r.URL.String()).Warning(err)
+			}
+
+			//log.Println("page indexed", key)
 
 			output := markdown.ToHTML(data, nil, nil)
 
@@ -79,12 +83,12 @@ func WikiPage(t ITemplate, s *model.Store, o *cms.Options) func(w http.ResponseW
 		})
 		if err != nil {
 			//	on 300 redirect to editor
-			cookie,  _ := r.Cookie("editor")
-			if cookie!=nil && cookie.Value=="Yes" && err.Error() == "302" {
+			cookie, _ := r.Cookie("editor")
+			if cookie != nil && cookie.Value == "Yes" && err.Error() == "302" {
 				http.Redirect(w, r, "/admin/buckets/wiki_pages/"+key, 302)
 				return
-			} else{
-				err= fmt.Errorf("404")
+			} else {
+				err = fmt.Errorf("404")
 			}
 			onErr(w, err)
 			return
