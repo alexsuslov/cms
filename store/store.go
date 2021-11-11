@@ -1,8 +1,9 @@
-package model
+package store
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/alexsuslov/cms/model"
 	"github.com/blevesearch/bleve/v2"
 	"github.com/boltdb/bolt"
 	"github.com/sirupsen/logrus"
@@ -12,7 +13,7 @@ import (
 var USERS = []byte("_users")
 
 func NewStoreBDB(filename string) (store *Store, err error) {
-	search := Env("SEARCH", "search")
+	search := model.Env("SEARCH", "search")
 	index, err := bleve.Open(search)
 	if err != nil {
 		mapping := bleve.NewIndexMapping()
@@ -48,8 +49,8 @@ func (s Store) Close() error {
 	return s.Index.Close()
 }
 
-func (s Store) GetUser(username string) (user *User, err error) {
-	user = &User{}
+func (s Store) GetUser(username string) (user *model.User, err error) {
+	user = &model.User{}
 	err = s.DB.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(USERS)
 		if b == nil {
@@ -70,11 +71,11 @@ func (s Store) FirstUser() error {
 		if err != nil {
 			return err
 		}
-		username := Env("ADMIN_USER", "root")
-		pass := Env("ADMIN_USER_PASS", "123456")
+		username := model.Env("ADMIN_USER", "root")
+		pass := model.Env("ADMIN_USER_PASS", "123456")
 		data := b.Get([]byte(username))
 		if data == nil {
-			u := User{
+			u := model.User{
 				Username: "admin",
 				Roles:    []string{"admin"},
 			}
@@ -87,3 +88,16 @@ func (s Store) FirstUser() error {
 		return nil
 	})
 }
+
+func (s Store) RmBucket(name []string) error {
+	for _, bucket := range name {
+		err := s.DB.Update(func(tx *bolt.Tx) error {
+			return tx.DeleteBucket([]byte(bucket))
+		})
+		if err!= nil{
+			return err
+		}
+	}
+	return nil
+}
+

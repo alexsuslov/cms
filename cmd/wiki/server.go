@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"github.com/Masterminds/sprig"
 	"github.com/alexsuslov/cms"
+	"github.com/alexsuslov/cms/auth"
 	"github.com/alexsuslov/cms/handle"
 	"github.com/alexsuslov/cms/manager"
-	"github.com/alexsuslov/cms/model"
+	"github.com/alexsuslov/cms/store"
 	"github.com/alexsuslov/godotenv"
 	"github.com/gorilla/mux"
 	"html/template"
@@ -51,7 +52,7 @@ func main() {
 			Funcs(sprig.FuncMap()).
 			ParseGlob(Env("TEMPLATES", "templates") + "/*.tmpl"))
 
-	Store, err := model.NewStoreBDB(Env("STORE", "db.bolt"))
+	Store, err := store.NewStoreBDB(Env("STORE", "db.bolt"))
 	if err != nil {
 		panic(err)
 	}
@@ -66,8 +67,15 @@ func main() {
 
 	// manager
 	sub := r.PathPrefix("/admin").Subrouter()
-	mid := model.NewAuthMid(Store, "admin")
+	mid := auth.NewAuthMid(Store, "admin")
 	sub.Use(mid.Middleware)
+
+	// User
+	subUser := r.PathPrefix("/user").Subrouter()
+	midUser := auth.NewAuthMid(Store, "user", "owner")
+	subUser.Use(midUser.Middleware)
+
+
 
 	// config
 	sub.HandleFunc("/config.yml",
@@ -79,6 +87,7 @@ func main() {
 	manager.Editor(sub, "js", Options)
 	manager.Imager(sub, "images", Options)
 	manager.Templater(sub, "templates", Options)
+	manager.HR(Store, sub, "users", Options)
 	manager.Bucketer(Store, sub, "buckets", Options)
 
 	// page

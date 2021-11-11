@@ -1,19 +1,24 @@
-package model
+package auth
 
 import (
 	"fmt"
+	"github.com/alexsuslov/cms/model"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
 	"time"
 )
 
+type IStore interface{
+	GetUser(username string) (user *model.User, err error)
+}
+
 type AuthenticationMiddleware struct {
-	Store *Store
+	Store IStore
 	Roles []string
 }
 
-func NewAuthMid(Store *Store, roles ...string) *AuthenticationMiddleware {
+func NewAuthMid(Store IStore, roles ...string) *AuthenticationMiddleware {
 	return &AuthenticationMiddleware{Store, roles}
 }
 

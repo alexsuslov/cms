@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 )
 
+
 type User struct {
 	ID       string   `json:"id"`
 	Username string   `json:"username"`
@@ -42,3 +43,4 @@ func (User User) ToBytes() []byte {
 	data, _ := json.Marshal(User)
 	return data
 }
+

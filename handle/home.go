@@ -2,7 +2,7 @@ package handle
 
 import (
 	"github.com/alexsuslov/cms"
-	"github.com/alexsuslov/cms/model"
+	"github.com/alexsuslov/cms/store"
 	"github.com/blevesearch/bleve/v2"
 	"github.com/sirupsen/logrus"
 	"io"
@@ -26,7 +26,7 @@ func Home( T ITemplate, o *cms.Options) func(http.ResponseWriter, *http.Request)
 	}
 }
 
-func HomeSearch(S *model.Store, T ITemplate, o *cms.Options) func(http.ResponseWriter, *http.Request) {
+func HomeSearch(S *store.Store, T ITemplate, o *cms.Options) func(http.ResponseWriter, *http.Request) {
 
 	onErr := Err(T, o)
 	return func(w http.ResponseWriter, r *http.Request) {

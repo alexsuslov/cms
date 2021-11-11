@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
-	"github.com/alexsuslov/cms/model"
+	"github.com/alexsuslov/cms/store"
 	"github.com/boltdb/bolt"
 	"github.com/sirupsen/logrus"
 	"io"
@@ -26,7 +26,7 @@ func (Item Item) ToBytes() []byte {
 	return data
 }
 
-func Buckets(s *model.Store, path string, o cms.Options) http.HandlerFunc {
+func Buckets(s *store.Store, path string, o cms.Options) http.HandlerFunc {
 
 	Init()
 	onErr := handle.Err(t, o)
@@ -38,12 +38,9 @@ func Buckets(s *model.Store, path string, o cms.Options) http.HandlerFunc {
 		// rm bucket
 		rm, ok := query["rm"]
 		if ok {
-			for _, bucket := range rm {
-				s.DB.Update(func(tx *bolt.Tx) error {
-					return tx.DeleteBucket([]byte(bucket))
-				})
-			}
+			s.RmBucket(rm)
 		}
+		
 		// todo: replace universal func with filter, limit, offset
 		err := s.DB.View(func(tx *bolt.Tx) error {
 			err := tx.ForEach(func(name []byte, _ *bolt.Bucket) error {
@@ -54,9 +51,7 @@ func Buckets(s *model.Store, path string, o cms.Options) http.HandlerFunc {
 						string(name),
 						stats.KeyN,
 					})
-
 				}
-
 				return nil
 			})
 			if err != nil {

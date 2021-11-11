@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/alexsuslov/cms"
-	"github.com/alexsuslov/cms/model"
+	"github.com/alexsuslov/cms/store"
 	"github.com/boltdb/bolt"
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
@@ -17,7 +17,7 @@ import (
 var WIKI = []byte("wiki_pages")
 var VALUES = []byte("wiki_values")
 
-func WikiPage(t ITemplate, s *model.Store, o *cms.Options) func(w http.ResponseWriter, r *http.Request) {
+func WikiPage(t ITemplate, s *store.Store, o *cms.Options) func(w http.ResponseWriter, r *http.Request) {
 	s.DB.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists(WIKI)
 		if err != nil {

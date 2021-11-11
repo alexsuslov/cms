@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
-	"github.com/alexsuslov/cms/model"
+	"github.com/alexsuslov/cms/store"
 	"github.com/boltdb/bolt"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-func BucketItem(s *model.Store, path string, o cms.Options) http.HandlerFunc {
+func BucketItem(s *store.Store, path string, o cms.Options) http.HandlerFunc {
 
 	Init()
 	onErr := handle.Err(t, o)
@@ -61,7 +61,7 @@ func BucketItem(s *model.Store, path string, o cms.Options) http.HandlerFunc {
 	}
 }
 
-func BucketItemUpdate(s *model.Store, path string, o cms.Options) http.HandlerFunc {
+func BucketItemUpdate(s *store.Store, path string, o cms.Options) http.HandlerFunc {
 
 	Init()
 	onErr := handle.Err(t, o)
