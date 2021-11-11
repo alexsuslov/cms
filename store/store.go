@@ -8,6 +8,7 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/sirupsen/logrus"
 	"log"
+	"os"
 )
 
 var USERS = []byte("_users")
@@ -74,7 +75,7 @@ func (s Store) FirstUser() error {
 		username := model.Env("ADMIN_USER", "root")
 		pass := model.Env("ADMIN_USER_PASS", "123456")
 		data := b.Get([]byte(username))
-		if data == nil {
+		if data == nil || os.Getenv("ADMIN_USER_CREATE")=="YES" {
 			u := model.User{
 				Username: "admin",
 				Roles:    []string{"admin"},

@@ -83,7 +83,7 @@ func main() {
 	sub.HandleFunc("/config.yml",
 		manager.FileUpdate(Env("CONFIG", "config.yml"), *Options)).Methods("POST")
 
-	// css
+	//
 	Editor(sub, "css", Options)
 	Editor(sub, "js", Options)
 	Imager(sub, "images", Options)
