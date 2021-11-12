@@ -91,17 +91,11 @@ func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFun
 		defer r.Body.Close()
 
 		// validate file type
-		ext:=path.Ext(filename)
-		if onErr(w, vali.IsValid(ext, data)){
+		ext := path.Ext(filename)
+		if onErr(w, vali.IsValid(ext, data)) {
 			return
 		}
-
-		f, err := os.OpenFile(localPath+"/"+filename, os.O_WRONLY|os.O_CREATE, 0666)
-		if onErr(w, err) {
-			return
-		}
-		defer f.Close()
-		_, err = f.Write(data)
+		err = os.WriteFile(localPath+"/"+filename, data, 0644)
 		if onErr(w, err) {
 			return
 		}
