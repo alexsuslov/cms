@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
+	"github.com/alexsuslov/cms/vali"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/validator.v2"
@@ -83,17 +84,17 @@ func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFun
 				return
 			}
 		}
-		q := vParams{filename}
-		err := validator.Validate(q)
-		if onErr(w, err) {
-			return
-		}
-
 		data, err := io.ReadAll(r.Body)
 		if onErr(w, err) {
 			return
 		}
 		defer r.Body.Close()
+
+		// validate file type
+		ext:=path.Ext(filename)
+		if onErr(w, vali.IsValid(ext, data)){
+			return
+		}
 
 		f, err := os.OpenFile(localPath+"/"+filename, os.O_WRONLY|os.O_CREATE, 0666)
 		if onErr(w, err) {

@@ -121,6 +121,8 @@ func FileUpload(localPath string, path string, o cms.Options) http.HandlerFunc {
 				return
 			}
 
+			//todo: validate file input
+
 			filePath := fmt.Sprintf("%s/%s", localPath, q.Filename)
 			f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
 			if err == nil {

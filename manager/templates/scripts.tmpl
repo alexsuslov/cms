@@ -6,14 +6,15 @@
 
 {{define "script_remover"}}
 <script>
-      const elements =document.getElementsByClassName("remover")
-      Array.prototype.forEach.call(elements, el => {
-          el.addEventListener("click", e => {
-              e.preventDefault()
-              if (window.confirm(`Удалить ${e.target.dataset.key} ?`)) {
-                  const URL={{.URL}}+`?rm=${e.target.dataset.key}`
+  const elements =document.getElementsByClassName("remover")
+  Array.prototype.forEach.call(elements, el => {
+  el.addEventListener("click", e => {
+      e.preventDefault()
+      if (window.confirm(`Удалить ${e.target.dataset.key} ?`)) {
+          const URL={{.URL}}+`?rm=${e.target.dataset.key}`
 
-                  fetch(URL)
-                      .then(()=>document.location.reload())}})})
+          fetch(URL)
+              .then(()=>document.location.reload())}})})
+
 </script>
 {{end}}

@@ -15,12 +15,18 @@
        editor.commands.addCommand({
           name: 'save',
           bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-          exec: function(editor) {
+          exec: async editor => {
               fetch({{.SaveURL}}, {
                   method: 'POST',
                   cache: 'no-cache',
                   body:  editor.getValue(),
-              }).then(r=>r.text())
+              }).then(async res => {
+                  if (res.status >= 200 && res.status < 300){
+                      alert("Saved")
+                  }else{
+                      alert("Error "+ await res.text())
+                  }
+              })
           },
           readOnly: true
       });
