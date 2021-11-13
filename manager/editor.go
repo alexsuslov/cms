@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
-	"github.com/alexsuslov/cms/vali"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/validator.v2"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"path"
 )
 
@@ -90,15 +88,7 @@ func PathUpdate(localPath string, webPath string, o cms.Options) http.HandlerFun
 		}
 		defer r.Body.Close()
 
-		// validate file type
-		ext := path.Ext(filename)
-		if onErr(w, vali.IsValid(ext, data)) {
-			return
-		}
-		err = os.WriteFile(localPath+"/"+filename, data, 0644)
-		if onErr(w, err) {
-			return
-		}
+		onErr(w, writeFile(localPath+"/"+filename, data))
 	}
 }
 

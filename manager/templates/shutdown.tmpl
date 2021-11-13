@@ -1,0 +1,36 @@
+{{define "shutdown"}}
+    <!doctype html>
+    <title>Site Maintenance</title>
+    <style>
+      body { text-align: center; padding: 150px; }
+      h1 { font-size: 50px; }
+      body { font: 20px Helvetica, sans-serif; color: #333; }
+      article { display: block; text-align: left; width: 650px; margin: 0 auto; }
+      a { color: #dc8100; text-decoration: none; }
+      a:hover { color: #333; text-decoration: none; }
+    </style>
+    <body>
+    <article>
+        <h1>Shutdown</h1>
+        <div>
+            <p>10 second restart process</p>
+          <button id="shutdown">Shutdown</button>
+          <button id="cancel">Cancel</button>
+            <a href="/">home</a>
+        </div>
+    </article>
+    <script>
+      document.getElementById("shutdown").addEventListener("click",e=>{
+          console.log("shutdown")
+          fetch("/admin/shutdown",{method: 'POST', body:{{.id}} })
+      });
+      document.getElementById("cancel").addEventListener("click",e=>{
+          console.log("cancel")
+          fetch("/admin/shutdown", {method: 'PUT', body:{{.id}} })
+      });
+
+    </script>
+    </body>
+{{end}}
+
+{{define "cancel"}}{{end}}

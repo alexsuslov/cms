@@ -10,6 +10,7 @@ require (
 	github.com/gomarkdown/markdown v0.0.0-20211105120026-16f708f914c3
 	github.com/gorilla/mux v1.8.0
 	github.com/sirupsen/logrus v1.8.1
+	github.com/teris-io/shortid v0.0.0-20201117134242-e59966efd125
 	gopkg.in/validator.v2 v2.0.0-20210331031555-b37d688a7fb0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )

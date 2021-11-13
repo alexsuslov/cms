@@ -23,3 +23,7 @@ func Init() {
 	}
 
 }
+
+func GetTemplate()*template.Template{
+	return t
+}

@@ -10,6 +10,7 @@ import (
 	"github.com/alexsuslov/cms/store"
 	"github.com/alexsuslov/godotenv"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 	"html/template"
 	"log"
 	"net/http"
@@ -47,10 +48,15 @@ func main() {
 	}
 
 	//templates
-	Templates := template.Must(
-		template.New("base").
-			Funcs(sprig.FuncMap()).
-			ParseGlob(Env("TEMPLATES", "templates") + "/*.tmpl"))
+	Templates := template.New("base").
+		Funcs(sprig.FuncMap())
+
+	Templates, err = Templates.ParseGlob(Env("TEMPLATES", "templates") + "/*.tmpl")
+	if err!= nil{
+		logrus.Error(err)
+		manager.Init()
+		Templates = manager.GetTemplate()
+	}
 
 	Store, err := store.NewStoreBDB(Env("STORE", "db.bolt"))
 	if err != nil {
@@ -59,6 +65,13 @@ func main() {
 	defer Store.Close()
 
 	r := mux.NewRouter()
+
+	httpAddr := fmt.Sprintf("%s:%s",
+		Env("HTTP_HOST", "0.0.0.0"),
+		Env("PORT", "8080"))
+	log.Println("listen", httpAddr)
+
+	server := http.Server{Addr: httpAddr, Handler: r}
 
 	// home
 	r.HandleFunc("/",
@@ -69,13 +82,14 @@ func main() {
 	sub := r.PathPrefix("/admin").Subrouter()
 	mid := auth.NewAuthMid(Store, "admin")
 	sub.Use(mid.Middleware)
+	sub.HandleFunc("/shutdown", manager.Shut()).Methods("GET")
+	sub.HandleFunc("/shutdown", manager.Cancel()).Methods("PUT")
+	sub.HandleFunc("/shutdown", manager.Down(&server)).Methods("POST")
 
 	// User
 	subUser := r.PathPrefix("/user").Subrouter()
 	midUser := auth.NewAuthMid(Store, "user", "owner")
 	subUser.Use(midUser.Middleware)
-
-
 
 	// config
 	sub.HandleFunc("/config.yml",
@@ -104,12 +118,7 @@ func main() {
 	r.PathPrefix("/static/").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir(static))))
 
-	httpAddr := fmt.Sprintf("%s:%s",
-		Env("HTTP_HOST", "0.0.0.0"),
-		Env("PORT", "8080"))
-	log.Println("listen", httpAddr)
 
-	server := http.Server{Addr: httpAddr, Handler: r}
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}

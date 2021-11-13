@@ -3,10 +3,12 @@ package manager
 import (
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
+	"github.com/alexsuslov/cms/vali"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path"
 )
 
 func FileEdit(file string, o cms.Options) http.HandlerFunc {
@@ -43,22 +45,21 @@ func FileUpdate(file string, o cms.Options) http.HandlerFunc {
 		}
 		defer r.Body.Close()
 
-		err = cms.Check(data)
-
-		if onErr(w, err) {
+		if onErr(w, writeFile(file, data)){
 			return
 		}
 
-		f, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE, 0666)
-		if onErr(w, err) {
-			return
-		}
-		defer f.Close()
-		_, err = f.Write(data)
-		if onErr(w, err) {
-			return
-		}
 		o.Refresh(data)
 		h(w, r)
 	}
+}
+
+func writeFile(filename string, data []byte) error {
+	// validate by file type
+	ext := path.Ext(filename)
+	if err := vali.IsValid(ext, data); err != nil {
+		return err
+	}
+	//write file
+	return os.WriteFile(filename, data, 0644)
 }
