@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"github.com/sirupsen/logrus"
 	"github.com/teris-io/shortid"
 	"log"
 	"net/http"
@@ -32,7 +33,10 @@ func close(s *http.Server) {
 	time.Sleep(10 * time.Second)
 	if restartID != "" {
 		restartID = ""
-		s.Close()
+		err := s.Close()
+		if err!= nil{
+			logrus.Error("Shutdown:%v", err)
+		}
 	}
 }
 

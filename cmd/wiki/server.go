@@ -65,6 +65,7 @@ func main() {
 	defer Store.Close()
 
 	r := mux.NewRouter()
+	r.Use(handle.LoggingMiddleware)
 
 	httpAddr := fmt.Sprintf("%s:%s",
 		Env("HTTP_HOST", "0.0.0.0"),
@@ -75,8 +76,7 @@ func main() {
 
 	// home
 	r.HandleFunc("/",
-		handle.Logger(
-			handle.HomeSearch(Store, Templates, Options)))
+			handle.HomeSearch(Store, Templates, Options))
 
 	// manager
 	sub := r.PathPrefix("/admin").Subrouter()
@@ -106,13 +106,13 @@ func main() {
 
 	// page
 	r.HandleFunc("/{filename}.html",
-		handle.Logger(
-			handle.Page(Templates, *Options)))
+
+			handle.Page(Templates, *Options))
 
 	// wiki page
 	r.HandleFunc("/{key}",
-		handle.Logger(
-			handle.WikiPage(Templates, Store, Options)))
+
+			handle.WikiPage(Templates, Store, Options))
 
 	static := Env("STATIC", "static")
 	r.PathPrefix("/static/").Handler(
