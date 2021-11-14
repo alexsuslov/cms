@@ -34,6 +34,12 @@ func (Options *Options) Set(key string, value interface{}) *Options {
 	return &o
 }
 
+func (Options *Options) Get(key string) (value interface{}){
+	o := *Options
+	return o[key]
+}
+
+
 func (Options *Options) Refresh(data []byte) error {
 	return yaml.Unmarshal(data, Options)
 }

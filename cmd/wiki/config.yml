@@ -1,2 +1,5 @@
 Title: WIKI
 mailto: email@email.com
+skip:
+  - "[::1]"
+  - "[::1]"

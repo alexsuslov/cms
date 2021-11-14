@@ -1,9 +1,15 @@
 package handle
 
 import (
+	"encoding/json"
+	"github.com/alexsuslov/cms"
+	"github.com/alexsuslov/cms/store"
+	"github.com/boltdb/bolt"
 	"github.com/sirupsen/logrus"
+	"log"
 	"net/http"
 	"runtime/debug"
+	"strings"
 	"time"
 )
 
@@ -88,4 +94,93 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 	}
 
 	return http.HandlerFunc(fn)
+}
+
+func LoggingMiddlewareDB(s *store.Store, o *cms.Options) func(next http.Handler) http.Handler {
+	hint := counter(s, []byte("visits"), o)
+	return func(next http.Handler) http.Handler {
+
+		fn := func(w http.ResponseWriter, r *http.Request) {
+			defer func() {
+				if err := recover(); err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					logrus.WithFields(logrus.Fields{
+						"err":   err,
+						"trace": debug.Stack(),
+					})
+				}
+			}()
+			ip := ReadUserIP(r)
+			user, _, _ := r.BasicAuth()
+
+			start := time.Now()
+			wrapped := wrapResponseWriter(w)
+			next.ServeHTTP(wrapped, r)
+
+			go hint(ip, []byte(r.URL.EscapedPath()))
+
+			logrus.WithFields(logrus.Fields{
+				"user":     user,
+				"ip":       ip,
+				"status":   wrapped.status,
+				"method":   r.Method,
+				"path":     r.URL.EscapedPath(),
+				"duration": time.Since(start),
+			}).Info("income")
+		}
+		return http.HandlerFunc(fn)
+	}
+}
+
+type skip []string
+func NewSkipper(data interface{})(s skip){
+	s=[]string{}
+	ips, ok := data.([]interface{})
+	if !ok{
+		return
+	}
+	for _, ip := range ips{
+		s= append(s, ip.(string))
+	}
+	return
+}
+func (skip skip) Is(ip string) bool {
+	for _, prefix := range skip {
+		if strings.HasPrefix(ip, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+func counter(s *store.Store, bucketName []byte, o *cms.Options) func(ip string, key []byte) {
+	Skiper := NewSkipper(o.Get("skip"))
+
+	return func(ip string, key []byte) {
+		if Skiper.Is(ip) {
+			return
+		}
+		err := s.DB.Update(func(tx *bolt.Tx) error {
+			b, err := tx.CreateBucketIfNotExists(bucketName)
+			if err != nil {
+				return err
+			}
+			count := 0
+			data := b.Get(key)
+			if data != nil {
+				if err := json.Unmarshal(data, &count); err != nil {
+					return err
+				}
+			}
+			count++
+			data, err = json.Marshal(count)
+			if err != nil {
+				return err
+			}
+			return b.Put(key, data)
+		})
+		if err != nil {
+			log.Println("counter:", err)
+		}
+	}
 }

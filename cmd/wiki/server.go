@@ -65,7 +65,7 @@ func main() {
 	defer Store.Close()
 
 	r := mux.NewRouter()
-	r.Use(handle.LoggingMiddleware)
+	r.Use(handle.LoggingMiddlewareDB(Store, Options))
 
 	httpAddr := fmt.Sprintf("%s:%s",
 		Env("HTTP_HOST", "0.0.0.0"),
