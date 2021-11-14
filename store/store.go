@@ -75,7 +75,7 @@ func (s Store) FirstUser() error {
 		username := model.Env("ADMIN_USER", "root")
 		pass := model.Env("ADMIN_USER_PASS", "123456")
 		data := b.Get([]byte(username))
-		if data == nil || os.Getenv("ADMIN_USER_CREATE")=="YES" {
+		if data == nil || os.Getenv("ADMIN_USER_CREATE") == "YES" {
 			u := model.User{
 				Username: "admin",
 				Roles:    []string{"admin"},
@@ -95,10 +95,20 @@ func (s Store) RmBucket(name []string) error {
 		err := s.DB.Update(func(tx *bolt.Tx) error {
 			return tx.DeleteBucket([]byte(bucket))
 		})
-		if err!= nil{
+		if err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
+func (s Store) RmBucketItem(bucketName []byte, key []byte) error {
+
+	return s.DB.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(bucketName)
+		if b == nil {
+			return nil
+		}
+		return b.Delete(key)
+	})
+}

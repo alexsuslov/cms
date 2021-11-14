@@ -25,6 +25,13 @@ func Bucket(s *store.Store, path string, o cms.Options) http.HandlerFunc {
 			onErr(w, fmt.Errorf("404"))
 		}
 
+		// rm bucket
+		rm := r.URL.Query().Get("rm")
+		if rm!="" {
+			s.RmBucketItem([]byte(bucketname), []byte(rm))
+		}
+
+
 		opt := store.NewSelectOptions().FromQuery(r.URL.Query())
 
 		keyvalues, err := store.Select(s, []byte(bucketname))(*opt)
