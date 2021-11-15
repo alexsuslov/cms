@@ -66,6 +66,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.Use(handle.LoggingMiddlewareDB(Store, Options))
+	handle.WellKnown(r)
 
 	httpAddr := fmt.Sprintf("%s:%s",
 		Env("HTTP_HOST", "0.0.0.0"),
