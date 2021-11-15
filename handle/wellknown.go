@@ -1,6 +1,7 @@
 package handle
 
 import (
+	"github.com/alexsuslov/cms"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
@@ -9,7 +10,8 @@ import (
 
 //WELL-KNOWN
 func WellKnown(r *mux.Router) {
-	data, err := ioutil.ReadFile("security.txt ")
+	security:=cms.Env("SECURITY", "security.txt")
+	data, err := ioutil.ReadFile(security)
 	if err==nil{
 		log.Println("well-known")
 		r.HandleFunc("/.well-known/security.txt", func(w http.ResponseWriter, _ *http.Request) {
