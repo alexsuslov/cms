@@ -1,31 +1,48 @@
 {{define "bucket"}}
-<!doctype html>
-<html lang="en">
-  {{template "head" .}}
-  <body>
-    <div class="container">
-      {{template "navbar" .}}
-{{/*      {{template "upload" .}}*/}}
-    <table class="table">
-      <tbody>
-        {{$Path:=.URL}}
-        {{range $key, $value := .Items }}
-          <tr >
-            <th>
-              <a href="{{$Path}}/{{$key}}">{{$key}}</a>
-            </th>
-            <td class="text-right">{{ printf "%.80s" $value }}</td>
-            <td class="text-right">
-              <button class="btn btn-warning remover" data-key={{$key}} ><i class="bi bi-trash" data-key={{$key}}></i></button>
-            </td>
-          </tr>
-        {{end}}
-        </tbody>
-    </table>
-    {{template "footer" .}}
-    </div>
-    {{template "scripts" .}}
-    {{template "script_remover" .}}
-  </body>
-</html>
+  <!doctype html>
+  <html lang="en">
+    {{template "head" .}}
+    <body>
+      <div class="container">
+        {{template "navbar" .}}
+  {{/*      {{template "upload" .}}*/}}
+      <table class="table">
+        {{template "bucket_head" .}}
+        <tbody>
+          {{$Path:=.URL}}
+          {{range $key, $value := .Items }}
+            <tr >
+              <th>
+                <a href="{{$Path}}/{{$key}}">{{$key}}</a>
+              </th>
+              <td class="text-right">{{ printf "%.80s" $value }}</td>
+              <td class="text-right">
+                <button class="btn btn-warning remover" data-key={{$key}} ><i class="bi bi-trash" data-key={{$key}}></i></button>
+              </td>
+            </tr>
+          {{end}}
+          </tbody>
+      </table>
+      {{template "footer" .}}
+      </div>
+      {{template "scripts" .}}
+      {{template "script_remover" .}}
+    </body>
+  </html>
+{{end}}
+
+{{define "bucket_head"}}
+  <form>
+    <thead>
+      <tr>
+        <th>
+          <input class="form-control" type="text" placeholder="prefix" name="prefix" value="{{.Prefix}}" />
+        </th>
+        <th>
+          <input class="form-control" type="text" placeholder="value" name="value" value="{{.Value}}" />
+        </th>
+        <td><button class="btn btn-primary" type="submit">submit</button></td>
+      </tr>
+    </thead>
+  </form>
 {{end}}
