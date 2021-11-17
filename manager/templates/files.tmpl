@@ -1,3 +1,20 @@
+{{define "sort_up_selected"}}
+  <a href={{.}}><i class="bi bi-caret-up-fill"></i></a>
+{{end}}
+
+{{define "sort_up"}}
+  <a href={{.}}><i class="bi bi-caret-up"></i></a>
+{{end}}
+
+{{define "sort_down_selected"}}
+  <a href={{.}}><i class="bi bi-caret-down-fill"></i></a>
+{{end}}
+
+{{define "sort_down"}}
+  <a href={{.}}><i class="bi bi-caret-down"></i></a>
+{{end}}
+
+
 {{define "files"}}
 <!doctype html>
 <html lang="en">
@@ -7,6 +24,7 @@
       {{template "navbar" .}}
       {{template "upload" .}}
     <table class="table">
+      {{template "files_head" .}}
       <tbody>
         {{$Path:=.URL}}
         {{range .Files}}
@@ -30,6 +48,34 @@
   </body>
 </html>
 {{end}}
+
+
+{{define "files_head"}}
+  <form>
+    <thead>
+      <tr>
+        <th>
+          <input type="text" name="filename" value="{{.Filename}}" />
+        </th>
+        <th>
+          Size
+            {{if eq .Sort "!size"}}
+              {{template "sort_up_selected" "" }}
+            {{else}}
+              {{template "sort_up" "?sort=!size" }}
+            {{end}}
+            {{if eq .Sort "size"}}
+              {{template "sort_down_selected" "" }}
+            {{else}}
+              {{template "sort_down" "?sort=size" }}
+            {{end}}
+        </th>
+        <td></td>
+      </tr>
+    </thead>
+  </form>
+{{end}}
+
 
 
 {{define "upload"}}

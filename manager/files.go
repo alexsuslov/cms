@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"sort"
 	"strings"
 )
 
@@ -61,6 +62,28 @@ func rmFiles(filePaths []string) error {
 	return nil
 }
 
+
+func IsContains(filter string, source string )bool{
+	if filter=="" {
+		return true
+	}
+	return strings.Contains(strings.ToUpper(source), strings.ToUpper(filter))
+}
+
+func SortSize(source []FileInfo, Sort string){
+	switch Sort {
+	case "size":
+		sort.Slice(source, func(i, j int) bool {
+			return source[i].Size > source[j].Size
+		})
+	case "!size":
+		sort.Slice(source, func(i, j int) bool {
+			return source[i].Size < source[j].Size
+		})
+	}
+}
+
+
 func Files(localPath string, path string, o cms.Options) http.HandlerFunc {
 
 	Init()
@@ -86,17 +109,24 @@ func Files(localPath string, path string, o cms.Options) http.HandlerFunc {
 			if strings.HasPrefix(f.Name(), ".") {
 				continue
 			}
-
-			Files = append(Files, FileInfo{
-				f.Name(),
-				f.Size(),
-				f.ModTime().Format(ru),
-			})
+			// filter
+			if IsContains(query.Get("filename"), f.Name()){
+				Files = append(Files, FileInfo{
+					f.Name(),
+					f.Size(),
+					f.ModTime().Format(ru),
+				})
+			}
 		}
+
+		SortSize(Files, query.Get("sort"))
+
 		err = t.ExecuteTemplate(w, "files", o.Extend(
 			cms.Options{
 				"URL":   path,
 				"Files": Files,
+				"Filename": query.Get("filename"),
+				"sort": query.Get("sort"),
 			}))
 		if err != nil {
 			logrus.Error(err)
