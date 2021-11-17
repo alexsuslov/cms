@@ -4,8 +4,6 @@ This project is made as an opportunity study.
 
 ## Planred
 
-- sorting
-- filtering
 - pagination
 - backup bucket
 - restore bucket items
