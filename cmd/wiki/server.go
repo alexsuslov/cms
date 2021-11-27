@@ -5,6 +5,7 @@ import (
 	"github.com/Masterminds/sprig"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/auth"
+	"github.com/alexsuslov/cms/backup"
 	"github.com/alexsuslov/cms/handle"
 	"github.com/alexsuslov/cms/manager"
 	"github.com/alexsuslov/cms/store"
@@ -86,6 +87,7 @@ func main() {
 	sub.HandleFunc("/shutdown", manager.Shut()).Methods("GET")
 	sub.HandleFunc("/shutdown", manager.Cancel()).Methods("PUT")
 	sub.HandleFunc("/shutdown", manager.Down(&server)).Methods("POST")
+	sub.HandleFunc("/backup.zip", backup.HandleFunc(Templates, Options))
 
 	// User
 	subUser := r.PathPrefix("/user").Subrouter()
