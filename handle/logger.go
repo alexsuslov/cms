@@ -98,6 +98,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 
 func LoggingMiddlewareDB(s *store.Store, o *cms.Options) func(next http.Handler) http.Handler {
 	hint := counter(s, []byte("visits"), o)
+	hintIP := counter(s, []byte("ips"), o)
 	return func(next http.Handler) http.Handler {
 
 		fn := func(w http.ResponseWriter, r *http.Request) {
@@ -118,6 +119,8 @@ func LoggingMiddlewareDB(s *store.Store, o *cms.Options) func(next http.Handler)
 			next.ServeHTTP(wrapped, r)
 
 			go hint(ip, []byte(r.URL.EscapedPath()))
+			key:=strings.Split(ip,":")
+			go hintIP(ip, []byte(key[0]))
 
 			logrus.WithFields(logrus.Fields{
 				"user":     user,

@@ -2,7 +2,6 @@ Title: WIKI
 mailto: email@email.com
 skip:
   - "[::1]"
-  - "[::1]"
 Backup:
   - config.yml
   - static
