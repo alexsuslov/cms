@@ -99,7 +99,8 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 func LoggingMiddlewareDB(s *store.Store, o *cms.Options) func(next http.Handler) http.Handler {
 	hint := counter(s, []byte("visits"), o)
 	hintIP := counter(s, []byte("ips"), o)
-	hint403 := counter(s, []byte("403"), o)
+	hint404 := counter(s, []byte("notfound"), o)
+	hint403 := counter(s, []byte("forbidden"), o)
 	return func(next http.Handler) http.Handler {
 
 		fn := func(w http.ResponseWriter, r *http.Request) {
@@ -119,14 +120,18 @@ func LoggingMiddlewareDB(s *store.Store, o *cms.Options) func(next http.Handler)
 			wrapped := wrapResponseWriter(w)
 			next.ServeHTTP(wrapped, r)
 
-			go hint(ip, []byte(r.URL.EscapedPath()))
+
 			key:=strings.Split(ip,":")
-			if wrapped.status ==403{
+
+			switch wrapped.status {
+			case 404:
+				go hint404(ip, []byte(r.URL.EscapedPath()))
+			case 403:
 				go hint403(ip, []byte(key[0]))
-			}else{
+			default:
+				go hint(ip, []byte(r.URL.EscapedPath()))
 				go hintIP(ip, []byte(key[0]))
 			}
-
 
 			logrus.WithFields(logrus.Fields{
 				"user":     user,
