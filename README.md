@@ -5,7 +5,6 @@ This project is made as an opportunity study.
 ## Planred
 
 - pagination
-- backup bucket
 - restore bucket items
 - upload bucket item
 - file change history ( list, diff view)
