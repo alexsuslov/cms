@@ -53,7 +53,7 @@ func main() {
 		Funcs(sprig.FuncMap())
 
 	Templates, err = Templates.ParseGlob(Env("TEMPLATES", "templates") + "/*.tmpl")
-	if err!= nil{
+	if err != nil {
 		logrus.Error(err)
 		manager.Init()
 		Templates = manager.GetTemplate()
@@ -78,12 +78,17 @@ func main() {
 
 	// home
 	r.HandleFunc("/",
-			handle.HomeSearch(Store, Templates, Options))
+		handle.HomeSearch(Store, Templates, Options))
 
 	// manager
 	sub := r.PathPrefix("/admin").Subrouter()
 	mid := auth.NewAuthMid(Store, "admin")
 	sub.Use(mid.Middleware)
+
+	sub.HandleFunc("/visits",
+		manager.Visits(Store, "/", *Options)).
+		Methods("GET")
+
 	sub.HandleFunc("/shutdown", manager.Shut()).Methods("GET")
 	sub.HandleFunc("/shutdown", manager.Cancel()).Methods("PUT")
 	sub.HandleFunc("/shutdown", manager.Down(&server)).Methods("POST")
@@ -110,17 +115,16 @@ func main() {
 	// page
 	r.HandleFunc("/{filename}.html",
 
-			handle.Page(Templates, *Options))
+		handle.Page(Templates, *Options))
 
 	// wiki page
 	r.HandleFunc("/{key}",
 
-			handle.WikiPage(Templates, Store, Options))
+		handle.WikiPage(Templates, Store, Options))
 
 	static := Env("STATIC", "static")
 	r.PathPrefix("/static/").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir(static))))
-
 
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)

@@ -46,3 +46,51 @@
     </thead>
   </form>
 {{end}}
+
+
+{{define "visits"}}
+  <!doctype html>
+  <html lang="en">
+    {{template "head" .}}
+    <body>
+      <div class="container">
+        {{template "navbar" .}}
+  {{/*      {{template "upload" .}}*/}}
+      <table class="table">
+        {{template "visits_head" .}}
+        <tbody>
+          {{$Path:=.URL}}
+          {{range .Items }}
+            <tr >
+              <th>
+                <a href="{{.URL}}">{{.URL}}</a>
+              </th>
+              <td class="text-right">{{ .Count }}</td>
+
+            </tr>
+          {{end}}
+          </tbody>
+      </table>
+      {{template "footer" .}}
+      </div>
+      {{template "scripts" .}}
+      {{template "script_remover" .}}
+    </body>
+  </html>
+{{end}}
+
+{{define "visits_head"}}
+  <form>
+    <thead>
+      <tr>
+        <th>
+          <input class="form-control" type="text" placeholder="prefix" name="prefix" value="{{.Prefix}}" />
+        </th>
+        <th>
+          <input class="form-control" type="text" placeholder="value" name="value" value="{{.Value}}" />
+        </th>
+        <td><button class="btn btn-primary" type="submit">submit</button></td>
+      </tr>
+    </thead>
+  </form>
+{{end}}
