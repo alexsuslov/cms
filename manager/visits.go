@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/alexsuslov/cms"
@@ -25,6 +26,11 @@ func Visits(s *store.Store, path string, o cms.Options) http.HandlerFunc {
 	onErr := handle.Err(t, o)
 
 	return func(w http.ResponseWriter, r *http.Request) {
+
+		query := r.URL.Query()
+
+		prefix := query.Get("prefix")
+
 		visits := []Visit{}
 		err := s.DB.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket(VISITS)
@@ -35,9 +41,13 @@ func Visits(s *store.Store, path string, o cms.Options) http.HandlerFunc {
 				var Count int
 				err := json.Unmarshal(v, &Count)
 				if err != nil {
-					return err
+					return nil
 				}
 
+				if prefix != "" && !bytes.HasPrefix(k, []byte(prefix)) {
+					return nil
+				}
+				
 				visits = append(visits, Visit{
 					string(k), Count,
 				})
