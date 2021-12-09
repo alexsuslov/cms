@@ -47,7 +47,7 @@ func Visits(s *store.Store, path string, o cms.Options) http.HandlerFunc {
 				if prefix != "" && !bytes.HasPrefix(k, []byte(prefix)) {
 					return nil
 				}
-				
+
 				visits = append(visits, Visit{
 					string(k), Count,
 				})
