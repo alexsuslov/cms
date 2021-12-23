@@ -5,7 +5,8 @@
   <body>
     <div class="container">
       {{template "navbar" .}}
-{{/*      {{template "upload" .}}*/}}
+      {{template "new_user" .}}
+
     <table class="table">
       <tbody>
         {{$Path:=.URL}}
@@ -29,4 +30,30 @@
     {{template "script_remover" .}}
   </body>
 </html>
+{{end}}
+
+{{define "new_user"}}
+  <p>
+    <button
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseNewUser"
+            aria-expanded="false"
+            aria-controls="collapseNewUser">
+      <i class="bi bi-person-plus"></i>
+    </button>
+  </p>
+  <div class="collapse" id="collapseNewUser">
+    <h3>Invite new user</h3>
+    <form>
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" name="email" class="form-control" placeholder="Enter email">
+        <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <hr>
+  </div>
 {{end}}

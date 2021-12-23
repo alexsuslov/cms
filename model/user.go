@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/json"
+	uuid "github.com/satori/go.uuid"
+	"time"
 )
-
 
 type User struct {
 	ID       string   `json:"id"`
 	Username string   `json:"username"`
+	Email    string   `json:"email"`
 	Roles    []string `json:"roles"`
 	Token    []byte   `json:"token"`
 }
@@ -44,3 +46,14 @@ func (User User) ToBytes() []byte {
 	return data
 }
 
+type Invite struct {
+	UUID    uuid.UUID `json:"uuid"`
+	Email   string    `json:"email"`
+	Expired time.Time `json:"expired"`
+	Count   int       `json:"count"`
+}
+
+func (Invite Invite) ToBytes() []byte {
+	data, _ := json.Marshal(Invite)
+	return data
+}

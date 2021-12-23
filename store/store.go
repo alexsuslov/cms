@@ -12,6 +12,7 @@ import (
 )
 
 var USERS = []byte("_users")
+var INVITES = []byte("_invites")
 
 func NewStoreBDB(filename string) (store *Store, err error) {
 	search := model.Env("SEARCH", "search")
