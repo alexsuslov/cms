@@ -20,7 +20,7 @@ func Login(s *store.Store, T ITemplate, o *cms.Options) func(http.ResponseWriter
 	}
 }
 
-func InviteGET(s *store.Store, T ITemplate, o *cms.Options) func(http.ResponseWriter, *http.Request) {
+func Invite(s *store.Store, T ITemplate, o *cms.Options) func(http.ResponseWriter, *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 

@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-type IStore interface{
-	GetUser(username string) (user *model.User, err error)
+type IStore interface {
+	GetUser(username string, user interface{}) (err error)
 }
 
 type AuthenticationMiddleware struct {
@@ -30,7 +30,8 @@ func (amw *AuthenticationMiddleware) Middleware(next http.Handler) http.Handler 
 			w.WriteHeader(401)
 			return
 		}
-		user, err := amw.Store.GetUser(name)
+		user := &model.User{}
+		err := amw.Store.GetUser(name, user)
 		if err != nil {
 			logrus.Errorf("Store.GetUser:%v", err)
 			time.Sleep(2 * time.Second)
@@ -53,11 +54,11 @@ func (amw *AuthenticationMiddleware) Middleware(next http.Handler) http.Handler 
 		}
 		expire := time.Now().AddDate(0, 0, 1)
 		cookie := http.Cookie{
-			Name:"editor",
-			Value:"Yes",
-			Path: "/",
-			Domain: r.URL.Host,
-			Expires: expire,
+			Name:       "editor",
+			Value:      "Yes",
+			Path:       "/",
+			Domain:     r.URL.Host,
+			Expires:    expire,
 			RawExpires: expire.Format(time.UnixDate),
 		}
 		http.SetCookie(w, &cookie)

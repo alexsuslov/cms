@@ -18,7 +18,6 @@ type User struct {
 }
 
 func (User *User) GetName() string {
-	//TODO implement me
 	return User.Username
 }
 

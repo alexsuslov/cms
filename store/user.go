@@ -17,7 +17,7 @@ type IUser interface {
 }
 
 func (s Store) CreateUser(user IUser) error {
-	return s.DB.View(func(tx *bolt.Tx) error {
+	return s.DB.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists(USERS)
 		if err != nil {
 			return err
@@ -47,6 +47,10 @@ func (s Store) GetUser(username string, user interface{}) (err error) {
 }
 
 func (s Store) FirstUser() error {
-	return s.CreateUser(
+	err := s.CreateUser(
 		model.NewAdminUser())
+	if err != nil && err.Error() == "user exists" {
+		err = nil
+	}
+	return err
 }
