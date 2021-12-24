@@ -9,37 +9,36 @@ import (
 )
 
 type SelectOptions struct {
-	Limit  *int
-	Offset *int
-	Prefix *string
-	Value *string
+	Limit   *int
+	Offset  *int
+	Prefix  *string
+	Value   *string
 	Reverse bool
 }
 
-func NewSelectOptions()*SelectOptions{
+func NewSelectOptions() *SelectOptions {
 	return &SelectOptions{}
 }
 
-func (Opt *SelectOptions)FromQuery(values url.Values)*SelectOptions{
+func (Opt *SelectOptions) FromQuery(values url.Values) *SelectOptions {
 	if l, err := strconv.Atoi(values.Get("limit")); err == nil {
-			Opt.Limit = &l
-		}
+		Opt.Limit = &l
+	}
 
-		if f, err := strconv.Atoi(values.Get("offset")); err == nil {
-			Opt.Offset = &f
-		}
+	if f, err := strconv.Atoi(values.Get("offset")); err == nil {
+		Opt.Offset = &f
+	}
 
-		if p := values.Get("prefix"); p != "" {
-			Opt.Prefix = &p
-		}
+	if p := values.Get("prefix"); p != "" {
+		Opt.Prefix = &p
+	}
 
-		if v := values.Get("value"); v != "" {
-			Opt.Value = &v
-		}
+	if v := values.Get("value"); v != "" {
+		Opt.Value = &v
+	}
 
-		return Opt
+	return Opt
 }
-
 
 func (Opt *SelectOptions) IsLimit() (r bool) {
 	if r = *Opt.Limit == 0; r {
@@ -63,13 +62,12 @@ func (Opt *SelectOptions) SetValue(value *string) *SelectOptions {
 	return Opt
 }
 
-func (Opt *SelectOptions) IsValue(v []byte) (bool) {
-	if Opt.Value == nil{
+func (Opt *SelectOptions) IsValue(v []byte) bool {
+	if Opt.Value == nil {
 		return true
 	}
-	return bytes.Contains(bytes.ToUpper(v),bytes.ToUpper( []byte(*Opt.Value)))
+	return bytes.Contains(bytes.ToUpper(v), bytes.ToUpper([]byte(*Opt.Value)))
 }
-
 
 func (Opt *SelectOptions) SetLimit(limit *int) *SelectOptions {
 	if limit != nil {
@@ -124,21 +122,21 @@ func Select(s *Store, bucketName []byte) func(...SelectOptions) (map[string][]by
 
 func Read(c *bolt.Cursor, option SelectOptions) map[string][]byte {
 	result := map[string][]byte{}
-	first := func()([]byte, []byte){
-		if option.Prefix!= nil{
+	first := func() ([]byte, []byte) {
+		if option.Prefix != nil {
 			return c.Seek([]byte(*option.Prefix))
 		}
-		if option.Reverse{
+		if option.Reverse {
 			return c.Last()
 		}
 		return c.First()
 	}
 
-	getter := func()([]byte, []byte){
-		if option.Prefix!= nil{
+	getter := func() ([]byte, []byte) {
+		if option.Prefix != nil {
 			return c.Seek([]byte(*option.Prefix))
 		}
-		if option.Reverse{
+		if option.Reverse {
 			return c.Prev()
 		}
 		return c.Next()
@@ -152,7 +150,7 @@ func Read(c *bolt.Cursor, option SelectOptions) map[string][]byte {
 			break
 		}
 
-		if !option.IsValue(v){
+		if !option.IsValue(v) {
 			continue
 		}
 
@@ -160,5 +158,3 @@ func Read(c *bolt.Cursor, option SelectOptions) map[string][]byte {
 	}
 	return result
 }
-
-

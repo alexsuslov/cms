@@ -80,6 +80,10 @@ func main() {
 	r.HandleFunc("/",
 		handle.HomeSearch(Store, Templates, Options))
 
+	//invite
+	r.HandleFunc("/invite/{uuid}",
+		handle.Invite(Store, Templates, Options))
+
 	// manager
 	sub := r.PathPrefix("/admin").Subrouter()
 	mid := auth.NewAuthMid(Store, "admin")
@@ -119,7 +123,6 @@ func main() {
 
 	// wiki page
 	r.HandleFunc("/{key}",
-
 		handle.WikiPage(Templates, Store, Options))
 
 	static := Env("STATIC", "static")
