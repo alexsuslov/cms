@@ -3,7 +3,7 @@ package store
 import (
 	"github.com/alexsuslov/cms/model"
 	"github.com/blevesearch/bleve/v2"
-	"github.com/boltdb/bolt"
+	bolt "go.etcd.io/bbolt"
 	"log"
 )
 

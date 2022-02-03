@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/store"
-	"github.com/boltdb/bolt"
 	"github.com/sirupsen/logrus"
+	bolt "go.etcd.io/bbolt"
 	"log"
 	"net/http"
 	"runtime/debug"
@@ -120,8 +120,7 @@ func LoggingMiddlewareDB(s *store.Store, o *cms.Options) func(next http.Handler)
 			wrapped := wrapResponseWriter(w)
 			next.ServeHTTP(wrapped, r)
 
-
-			key:=strings.Split(ip,":")
+			key := strings.Split(ip, ":")
 
 			switch wrapped.status {
 			case 404:
@@ -147,14 +146,15 @@ func LoggingMiddlewareDB(s *store.Store, o *cms.Options) func(next http.Handler)
 }
 
 type skip []string
-func NewSkipper(data interface{})(s skip){
-	s=[]string{}
+
+func NewSkipper(data interface{}) (s skip) {
+	s = []string{}
 	ips, ok := data.([]interface{})
-	if !ok{
+	if !ok {
 		return
 	}
-	for _, ip := range ips{
-		s= append(s, ip.(string))
+	for _, ip := range ips {
+		s = append(s, ip.(string))
 	}
 	return
 }

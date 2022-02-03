@@ -6,7 +6,6 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/alexsuslov/godotenv v1.3.1
 	github.com/blevesearch/bleve/v2 v2.2.2
-	github.com/boltdb/bolt v1.3.1
 	github.com/gomarkdown/markdown v0.0.0-20211105120026-16f708f914c3
 	github.com/gorilla/mux v1.8.0
 	github.com/sirupsen/logrus v1.8.1

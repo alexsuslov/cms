@@ -3,7 +3,7 @@ package store
 import (
 	"bytes"
 	"fmt"
-	"github.com/boltdb/bolt"
+	bolt "go.etcd.io/bbolt"
 	"net/url"
 	"strconv"
 )

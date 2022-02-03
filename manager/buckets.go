@@ -6,8 +6,8 @@ import (
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
 	"github.com/alexsuslov/cms/store"
-	"github.com/boltdb/bolt"
 	"github.com/sirupsen/logrus"
+	bolt "go.etcd.io/bbolt"
 	"io"
 	"net/http"
 )
@@ -40,7 +40,7 @@ func Buckets(s *store.Store, path string, o cms.Options) http.HandlerFunc {
 		if ok {
 			s.RmBucket(rm)
 		}
-		
+
 		// todo: replace universal func with filter, limit, offset
 		err := s.DB.View(func(tx *bolt.Tx) error {
 			err := tx.ForEach(func(name []byte, _ *bolt.Bucket) error {

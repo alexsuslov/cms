@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/store"
-	"github.com/boltdb/bolt"
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+	bolt "go.etcd.io/bbolt"
 	"html/template"
 	"net/http"
 )

@@ -7,8 +7,8 @@ import (
 	"github.com/alexsuslov/cms"
 	"github.com/alexsuslov/cms/handle"
 	"github.com/alexsuslov/cms/store"
-	"github.com/boltdb/bolt"
 	"github.com/sirupsen/logrus"
+	bolt "go.etcd.io/bbolt"
 	"net/http"
 	"sort"
 )
