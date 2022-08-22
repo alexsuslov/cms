@@ -2,7 +2,7 @@
 
 This project is made as an opportunity study.
 
-## Planred
+## Planed
 
 - pagination
 - restore bucket items
