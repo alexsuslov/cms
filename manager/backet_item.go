@@ -48,8 +48,9 @@ func BucketItem(s *store.Store, path string, o cms.Options) http.HandlerFunc {
 		mode := "ace/mode/json"
 		err := t.ExecuteTemplate(w, "editor", o.Extend(
 			cms.Options{
-				"SaveURL":  fmt.Sprintf("%s/%s/%s", path, bucketName, Key),
-				"BasePath": "https://pagecdn.io/lib/ace/1.4.12",
+				"SaveURL": fmt.Sprintf("%s/%s/%s", path, bucketName, Key),
+				//"BasePath": "https://pagecdn.io/lib/ace/1.4.12",
+				"BasePath": "https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/",
 				"Theme":    "ace/theme/tomorrow",
 				"Mode":     mode,
 				"Data":     value,

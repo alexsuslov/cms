@@ -23,8 +23,9 @@ func FileEdit(file string, o cms.Options) http.HandlerFunc {
 		}
 		err = t.ExecuteTemplate(w, "editor", o.Extend(
 			cms.Options{
-				"SaveURL":  "/admin/config.yml",
-				"BasePath": "https://pagecdn.io/lib/ace/1.4.12",
+				"SaveURL": "/admin/config.yml",
+				//"BasePath": "https://pagecdn.io/lib/ace/1.4.12",
+				"BasePath": "https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/",
 				"Theme":    "ace/theme/tomorrow",
 				"Mode":     "ace/mode/yaml",
 				"Data":     string(data),
@@ -45,7 +46,7 @@ func FileUpdate(file string, o cms.Options) http.HandlerFunc {
 		}
 		defer r.Body.Close()
 
-		if onErr(w, writeFile(file, data)){
+		if onErr(w, writeFile(file, data)) {
 			return
 		}
 
