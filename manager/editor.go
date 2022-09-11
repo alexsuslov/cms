@@ -60,7 +60,8 @@ func PathEdit(localPath string, webPath string, o cms.Options) http.HandlerFunc 
 		err = t.ExecuteTemplate(w, "editor", o.Extend(
 			cms.Options{
 				"SaveURL":  webPath + "/" + filename,
-				"BasePath": "https://pagecdn.io/lib/ace/1.4.12",
+// 				"BasePath": "https://pagecdn.io/lib/ace/1.4.12",
+				"BasePath": "https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/",
 				"Theme":    "ace/theme/tomorrow",
 				"Mode":     mode,
 				"Data":     string(data),
