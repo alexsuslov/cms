@@ -23,8 +23,8 @@ func FileEdit(file string, o cms.Options) http.HandlerFunc {
 		}
 		err = t.ExecuteTemplate(w, "editor", o.Extend(
 			cms.Options{
-				"SaveURL": "/admin/config.yml",,
-				"BasePath": "https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.10/",
+				"SaveURL":  "/admin/config.yml",
+				"BasePath": "https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.0",
 				"Theme":    "ace/theme/tomorrow",
 				"Mode":     "ace/mode/yaml",
 				"Data":     string(data),

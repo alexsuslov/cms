@@ -2,6 +2,7 @@ package handle
 
 import (
 	"github.com/alexsuslov/cms"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
 	"time"
@@ -27,7 +28,9 @@ func Err(t ITemplate, o IExtend) func(w http.ResponseWriter, err error) bool {
 				return true
 			}
 
-			if strings.HasPrefix(err.Error(), "500"){
+			logrus.Error(err.Error())
+
+			if strings.HasPrefix(err.Error(), "500") {
 				w.WriteHeader(500)
 				w.Write([]byte(err.Error()))
 				return true

@@ -6,7 +6,7 @@ import (
 )
 
 func Imager(sub *mux.Router, ext string, Options *cms.Options) {
-	static := Env("STATIC", "static/")
+	static := Env("STATIC", "static")
 
 	p := "/" + ext
 	l := static + "/" + ext
