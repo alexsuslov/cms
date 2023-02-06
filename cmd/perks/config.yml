@@ -1,0 +1,11 @@
+Title: Автотовары
+mailto: email@email.com
+skip:
+  - "[::1]"
+Backup:
+  - config.yml
+  - static
+  - templates
+  - db.bolt
+Dict:
+  wheels: Грузовые колеса

@@ -4,3 +4,6 @@ bolt:
 	(cd cmd/serverDB; go run server.go)
 wiki:
 	(cd cmd/wiki; go run server.go)
+
+perks:
+	(cd cmd/perks; go run server.go)

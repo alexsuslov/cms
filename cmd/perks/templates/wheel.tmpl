@@ -1,0 +1,97 @@
+{{define "wheels_table"}}
+  <!doctype html>
+  <html lang="ru">
+    {{template "head" .}}
+    <body>
+      <div class="container">
+        {{template "navbar" .}}
+        <h1>{{.Name}}</h1>
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <td>Наименование</td>
+            <td>Описание</td>
+          </tr>
+        </thead>
+        <tbody>
+          {{$Path:=.URL}}
+          {{range $key, $Item := .Items }}
+            <tr>
+              <th>
+                <a href="{{$Path}}/{{$key}}">{{$Item.Name}}</a>
+              </th>
+              <td class="text-right">{{$Item.Desc}}</td>
+            </tr>
+          {{end}}
+          </tbody>
+      </table>
+      {{template "footer" .}}
+      </div>
+      <script
+              src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+              integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+              crossorigin="anonymous"></script>
+    </body>
+  </html>
+{{end}}
+
+{{define "wheels"}}
+  <!doctype html>
+  <html lang="ru">
+    {{template "head" .}}
+    <body>
+      <div class="container">
+        {{template "navbar" .}}
+          {{$Path:=.URL}}
+          {{range $key, $Items := .Rows }}
+          <div class="row">
+            {{range $key, $Item := $Items }}
+              <div class="card" style="width: 25%;">
+                <a href="{{$Path}}/{{$key}}">
+                  {{if .Image}}
+                      <img class="card-img-top" src="/static/images/{{.Image}}" />
+                  {{else}}
+                      <img class="card-img-top" src="/static/images/no-image.jpg" />
+                  {{end}}
+                </a>
+                <div class="card-body">
+                  <h5 class="card-title">{{.Name}}</h5>
+                  <p class="card-text">{{.Desc}}</p>
+                </div>
+              </div>
+            {{end}}
+          </div>
+          {{end}}
+      {{template "footer" .}}
+      </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    </body>
+  </html>
+{{end}}
+
+
+
+{{define "wheel"}}
+  <!doctype html>
+  <html lang="ru">
+    {{template "head" .}}
+    <body>
+      <div class="container">
+        {{template "navbar" .}}
+        <h5><a href="{{.EditURL}}">[e]</a>{{.Item.Name}}</h5>
+        {{if .Item.Image}}
+            <img class="img-thumbnail" src="/static/images/{{.Item.Image}}" />
+        {{else}}
+            <img class="img-thumbnail" src="/static/images/no-image.jpg" />
+        {{end}}
+        <p>{{.Item.Desc}}</p>
+          <div class="bucket_counter" data-key={{.Key}}></div>
+
+        {{template "footer" .}}
+      </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="/static/js/counter.js"></script>
+    </body>
+  </html>
+{{end}}
